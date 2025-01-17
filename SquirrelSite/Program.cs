@@ -1,3 +1,5 @@
+using Microsoft.EntityFrameworkCore;
+using SquirrelSite.Models;
 using SquirrelSite.Services.ImageLogic;
 
 namespace SquirrelSite
@@ -12,6 +14,11 @@ namespace SquirrelSite
             builder.Services.AddControllersWithViews();
             builder.Services.AddScoped<ImageMetadata>();
 
+            // TODO: Connext Azure DB
+            //builder.Services.AddDbContext<SiteContext>(options =>
+            //{
+            //      options.UseSqlServer
+            //})
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
