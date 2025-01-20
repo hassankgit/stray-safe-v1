@@ -2,7 +2,7 @@
 {
     public class User
     {
-        // test feature-nk-0001
+        // test feature-hk-0001
         public int Id { get; set; }
         public required string Username { get; set; }
         public required string Password { get; set; }
