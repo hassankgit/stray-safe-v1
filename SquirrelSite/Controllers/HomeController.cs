@@ -18,12 +18,7 @@ namespace SquirrelSite.Controllers
 
         public IActionResult Index()
         {
-            //Coordinates coordinates = new Coordinates()
-            //{
-            //    Latitude = 39.95679359894806,
-            //    Longitude = -75.18997628804196
-            //};
-            return View(new Coordinates());
+            return View();
         }
 
         public IActionResult Submit()
