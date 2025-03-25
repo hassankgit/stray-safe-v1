@@ -1,45 +1,46 @@
-using Microsoft.EntityFrameworkCore;
-using SquirrelSite.Models;
-using SquirrelSite.Services.ImageLogic;
+using StraySafe.Services.ImageLogic;
+using StraySafe.Nucleus.Database;
+using StraySafe.Nucleus.Database.Models.Users;
 
-namespace SquirrelSite
+namespace StraySafe
 {
     public class Program
     {
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+            DataContext context = new DataContext();
+
+            User? user = context.Users.FirstOrDefault(x => x.Id == 1);
+            if (user != null)
+            {
+                Console.WriteLine($"Username: {user.Username}, Password: {user.Password}");
+            }
+            else
+            {
+                throw new Exception("db not working womp womp");
+            }
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
             builder.Services.AddScoped<ImageMetadata>();
-
-            // TODO: Connext Azure DB
-            //builder.Services.AddDbContext<SiteContext>(options =>
-            //{
-            //      options.UseSqlServer
-            //})
+            builder.Services.AddScoped<DataContext>();
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())
             {
                 app.UseExceptionHandler("/Home/Error");
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
-
             app.UseRouting();
-
             app.UseAuthorization();
-
             app.MapControllerRoute(
                 name: "default",
                 pattern: "{controller=Home}/{action=Index}/{id?}");
-
             app.Run();
         }
     }

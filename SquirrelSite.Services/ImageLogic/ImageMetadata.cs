@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Http;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Metadata.Profiles.Exif;
-using SquirrelSite.Models;
+using StraySafe.Models;
 
-namespace SquirrelSite.Services.ImageLogic
+namespace StraySafe.Services.ImageLogic
 {
     public class ImageMetadata
     {

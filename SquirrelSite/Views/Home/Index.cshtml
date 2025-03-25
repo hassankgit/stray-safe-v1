@@ -1,20 +1,20 @@
-﻿@model Coordinates
-
-@{
-    ViewData["Title"] = "Home Page";
-}
-
-<div class="text-center">
-    <h1 class="display-4">The Squirrel Site (in progress)</h1>
-    <a class="btn btn-primary" asp-action="Submit">Submit</a>
-    <a class="btn btn-secondary" asp-action="ViewSubmissions">View Submissions</a>
-    <br />
-    <p> Latitude: @Model.Latitude</p>
-    <p> Longitude: @Model.Longitude</p>
-</div>
-
-@*Notes: 
+﻿@*Notes: 
     - (1) The @model is used to basically import a model and allow you to use its values.
     - (8) Don't need to specify asp-controller="Home" because we're already in the Home folder
     - (11) The @Model accesses the model at the top, can only have on per doc.
 *@
+
+
+@* the @model is used to basically import a model and allow u to use its values. *@
+@model StraySafe.Nucleus.Database.Models.Users.User
+
+<div class="text-center">
+    <h1 class="display-4">StraySafe (in progress)</h1>
+
+    <form asp-action="Login" asp-controller="Home" enctype="multipart/form-data">
+        <input class="form-control" type="text" placeholder="Username" asp-for="Username" />
+        <input class="form-control" type="password" placeholder="Password" asp-for="Password" />
+
+        <button class="btn btn-primary mt-4" type="submit">Login</button>
+    </form>
+</div>

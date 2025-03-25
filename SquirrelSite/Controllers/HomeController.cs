@@ -1,14 +1,15 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
-using SquirrelSite.Models;
-using SquirrelSite.Services.ImageLogic;
+using StraySafe.Models;
+using StraySafe.Services.ImageLogic;
 
-namespace SquirrelSite.Controllers
+namespace StraySafe.Controllers
 {
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
         private readonly ImageMetadata _imageMetadata;
+        //private readonly DataContext _context;
 
         public HomeController(ILogger<HomeController> logger, ImageMetadata imageMetadata)
         {
@@ -31,6 +32,11 @@ namespace SquirrelSite.Controllers
             Coordinates coords = _imageMetadata.GetCoordinates(submission.Image);
             return RedirectToAction("index");
         }
+
+        //public IActionResult Login(User user)
+        //{
+            //LoginResponse response = _userClient.Login(User user);
+        //}
 
         public IActionResult ViewSubmissions()
         {

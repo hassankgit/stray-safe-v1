@@ -1,4 +1,4 @@
-namespace SquirrelSite.Models
+namespace StraySafe.Models
 {
     public class ErrorViewModel
     {
