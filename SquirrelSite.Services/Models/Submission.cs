@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Http;
 
-namespace SquirrelSite.Models
+namespace StraySafe.Models
 {
     public class Submission
     {
