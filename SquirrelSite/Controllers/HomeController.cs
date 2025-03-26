@@ -2,19 +2,22 @@ using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using StraySafe.Models;
 using StraySafe.Services.ImageLogic;
+using StraySafe.Services.Users;
+using StraySafe.Services.Users.Models;
 
 namespace StraySafe.Controllers
 {
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
-        private readonly ImageMetadata _imageMetadata;
-        //private readonly DataContext _context;
+        private readonly ImageMetadataClient _imageMetadataClient;
+        private readonly UserClient _userClient;
 
-        public HomeController(ILogger<HomeController> logger, ImageMetadata imageMetadata)
+        public HomeController(ILogger<HomeController> logger, ImageMetadataClient imageMetadataClient, UserClient userClient)
         {
             _logger = logger;
-            _imageMetadata = imageMetadata;
+            _imageMetadataClient = imageMetadataClient;
+            _userClient = userClient;
         }
 
         public IActionResult Index()
@@ -22,36 +25,25 @@ namespace StraySafe.Controllers
             return View();
         }
 
-        public IActionResult Submit()
-        {
-            return View();
-        }
-
+        [HttpPost("Submit")]
         public IActionResult SubmitForm(Submission submission)
         {
-            Coordinates coords = _imageMetadata.GetCoordinates(submission.Image);
-            return RedirectToAction("index");
+            Coordinates coords = _imageMetadataClient.GetCoordinates(submission.Image);
+            return Ok("index");
         }
 
-        //public IActionResult Login(User user)
-        //{
-            //LoginResponse response = _userClient.Login(User user);
-        //}
-
-        public IActionResult ViewSubmissions()
+        [HttpPost("Login")]
+        public IActionResult Login(LoginRequest request)
         {
-            return View();
-        }
-
-        public IActionResult Privacy()
-        {
-            return View();
-        }
-
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
-        {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+            bool isLoggedIn = _userClient.Login(request);
+            if (isLoggedIn)
+            {
+                return Ok(isLoggedIn);
+            }
+            else
+            {
+                return NotFound();
+            }
         }
     }
 }

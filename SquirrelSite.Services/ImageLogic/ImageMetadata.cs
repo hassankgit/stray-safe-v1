@@ -5,7 +5,7 @@ using StraySafe.Models;
 
 namespace StraySafe.Services.ImageLogic
 {
-    public class ImageMetadata
+    public class ImageMetadataClient
     {
         public Coordinates GetCoordinates(IFormFile file)
         {

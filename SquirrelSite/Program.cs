@@ -1,6 +1,7 @@
 using StraySafe.Services.ImageLogic;
 using StraySafe.Nucleus.Database;
-using StraySafe.Nucleus.Database.Models.Users;
+using StraySafe.Services.Users;
+using Microsoft.OpenApi.Models;
 
 namespace StraySafe
 {
@@ -9,30 +10,46 @@ namespace StraySafe
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
-            DataContext context = new DataContext();
-
-            User? user = context.Users.FirstOrDefault(x => x.Id == 1);
-            if (user != null)
-            {
-                Console.WriteLine($"Username: {user.Username}, Password: {user.Password}");
-            }
-            else
-            {
-                throw new Exception("db not working womp womp");
-            }
-
-            // Add services to the container.
             builder.Services.AddControllersWithViews();
-            builder.Services.AddScoped<ImageMetadata>();
+
+            // initialize db
             builder.Services.AddScoped<DataContext>();
+
+            // clients
+            // TODO: separate into different function to unclutter this?
+            builder.Services.AddScoped<ImageMetadataClient>();
+            builder.Services.AddScoped<AdminClient>();
+            builder.Services.AddScoped<UserClient>();
+
+            builder.Services.AddEndpointsApiExplorer();
+            builder.Services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo
+                {
+                    Title = "StraySafe API",
+                    Version = "v1",
+                    Description = "First iteration of StraySafe API",
+                    Contact = new OpenApiContact
+                    {
+                        Name = "Test Contact",
+                        Email = "testing@test.com"
+                    }
+                });
+            });
+
             var app = builder.Build();
 
-            // Configure the HTTP request pipeline.
-            if (!app.Environment.IsDevelopment())
-            {
+            // TODO: configure development environments
+            //if (!app.Environment.IsDevelopment())
+            //{
                 app.UseExceptionHandler("/Home/Error");
                 app.UseHsts();
-            }
+                app.UseSwagger();
+                app.UseSwaggerUI(c =>
+                {
+                    c.SwaggerEndpoint("/swagger/v1/swagger.json", "StraySafe API v1");
+                });
+            //}
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
