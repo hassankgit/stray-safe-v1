@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.12.35527.113
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StraySafe", "SquirrelSite\StraySafe.csproj", "{433A3DA5-8841-4BC4-A7E1-7188906216A6}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StraySafe", "StraySafe\StraySafe.csproj", "{433A3DA5-8841-4BC4-A7E1-7188906216A6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StraySafe.Services", "SquirrelSite.Services\StraySafe.Services.csproj", "{A800B9DB-09C4-45E5-B55D-01F480371349}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StraySafe.Services", "StraySafe.Services\StraySafe.Services.csproj", "{A800B9DB-09C4-45E5-B55D-01F480371349}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StraySafe.Nucleus", "StraySafe.Nucleus\StraySafe.Nucleus.csproj", "{AC221BA1-0489-4723-8822-3681C62CB130}"
 EndProject
