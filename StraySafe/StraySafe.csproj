@@ -18,7 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\SquirrelSite.Services\StraySafe.Services.csproj" />
+    <ProjectReference Include="..\StraySafe.Services\StraySafe.Services.csproj" />
     <ProjectReference Include="..\StraySafe.Nucleus\StraySafe.Nucleus.csproj" />
   </ItemGroup>
 
