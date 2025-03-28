@@ -1,8 +1,8 @@
 ﻿using StraySafe.Nucleus.Database;
 using StraySafe.Nucleus.Database.Models.Users;
-using StraySafe.Services.Users.Models;
+using StraySafe.Services.Admin.Models;
 
-namespace StraySafe.Services.Users;
+namespace StraySafe.Services.Admin;
 public class UserClient
 {
     private readonly DataContext _context;
