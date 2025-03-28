@@ -2,8 +2,8 @@ using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using StraySafe.Models;
 using StraySafe.Services.ImageLogic;
-using StraySafe.Services.Users;
-using StraySafe.Services.Users.Models;
+using StraySafe.Services.Admin;
+using StraySafe.Services.Admin.Models;
 
 namespace StraySafe.Controllers
 {

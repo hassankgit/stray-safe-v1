@@ -1,7 +1,7 @@
 ﻿using StraySafe.Nucleus.Database;
 using StraySafe.Nucleus.Database.Models.Users;
 
-namespace StraySafe.Services.Users;
+namespace StraySafe.Services.Admin;
 public class AdminClient
 {
     private readonly DataContext _context;
@@ -10,9 +10,9 @@ public class AdminClient
         _context = context;
     }
 
-    public List<User> GetAllUsers()
+    public IEnumerable<User> GetAllUsers()
     {
-        List<User> users = _context.Users.ToList();
+        IEnumerable<User> users = _context.Users.ToList();
         return users;
     }
 }

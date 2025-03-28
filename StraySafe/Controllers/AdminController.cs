@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using StraySafe.Nucleus.Database.Models.Users;
-using StraySafe.Services.Users;
+using StraySafe.Services.Admin;
 
 namespace StraySafe.Controllers
 {
@@ -19,7 +19,7 @@ namespace StraySafe.Controllers
         [HttpGet("AllUsers")]
         public IActionResult GetAllUsers()
         {
-            List<User> users = _adminClient.GetAllUsers();
+            IEnumerable<User> users = _adminClient.GetAllUsers();
             return Ok(users);
         }
     }

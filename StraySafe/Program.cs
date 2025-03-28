@@ -1,6 +1,6 @@
 using StraySafe.Services.ImageLogic;
 using StraySafe.Nucleus.Database;
-using StraySafe.Services.Users;
+using StraySafe.Services.Admin;
 using Microsoft.OpenApi.Models;
 
 namespace StraySafe
@@ -11,6 +11,17 @@ namespace StraySafe
         {
             var builder = WebApplication.CreateBuilder(args);
             builder.Services.AddControllersWithViews();
+
+            //temporary to let frontend thru
+            builder.Services.AddCors(options =>
+            {
+                options.AddDefaultPolicy(policy =>
+                {
+                    policy.WithOrigins("http://localhost:3000")
+                          .AllowAnyMethod()
+                          .AllowAnyHeader();
+                });
+            });
 
             // initialize db
             builder.Services.AddScoped<DataContext>();
@@ -54,6 +65,10 @@ namespace StraySafe
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseRouting();
+
+            // CORS must be configured after routing (idk why)
+            app.UseCors();
+
             app.UseAuthorization();
             app.MapControllerRoute(
                 name: "default",

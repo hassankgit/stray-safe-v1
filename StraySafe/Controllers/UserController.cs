@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using StraySafe.Services.Users;
-using StraySafe.Services.Users.Models;
+using StraySafe.Services.Admin;
+using StraySafe.Services.Admin.Models;
 
 namespace StraySafe.Controllers
 {
