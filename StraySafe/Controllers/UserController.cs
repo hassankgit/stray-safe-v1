@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using StraySafe.Services.Admin;
 using StraySafe.Services.Admin.Models;
+using StraySafe.Services.Users;
 
 namespace StraySafe.Controllers
 {
@@ -24,14 +24,7 @@ namespace StraySafe.Controllers
             //      if user valid, return a LoginResponse (user information, bearer token)
             //      if user is invalid, throw 401
             bool isLoggedIn = _userClient.Login(request);
-            if (isLoggedIn)
-            {
-                return Ok(isLoggedIn);
-            }
-            else
-            {
-                return NotFound();
-            }
+            return Ok(isLoggedIn);
         }
     }
 }

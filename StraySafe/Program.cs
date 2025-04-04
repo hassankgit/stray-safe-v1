@@ -2,6 +2,10 @@ using StraySafe.Services.ImageLogic;
 using StraySafe.Nucleus.Database;
 using StraySafe.Services.Admin;
 using Microsoft.OpenApi.Models;
+using Microsoft.AspNetCore.Identity;
+using StraySafe.Nucleus.Database.Models.Users;
+using Microsoft.EntityFrameworkCore;
+using StraySafe.Services.Users;
 
 namespace StraySafe
 {
@@ -47,6 +51,20 @@ namespace StraySafe
                     }
                 });
             });
+
+            // Configure authentication
+            builder.Services.AddAuthorization();
+            builder.Services.AddAuthentication().AddCookie(IdentityConstants.ApplicationScheme);
+            builder.Services.AddIdentityCore<User>()
+                .AddEntityFrameworkStores<DataContext>()
+                .AddApiEndpoints();
+            //builder.Services.AddIdentityCore
+
+            var config = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("appsettings.json")
+                .Build();
+            builder.Services.AddDbContext<DataContext>(options => options.UseNpgsql(config.GetConnectionString("dev")));
 
             var app = builder.Build();
 

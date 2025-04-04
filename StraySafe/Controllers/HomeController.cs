@@ -1,9 +1,6 @@
-using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
-using StraySafe.Models;
 using StraySafe.Services.ImageLogic;
-using StraySafe.Services.Admin;
-using StraySafe.Services.Admin.Models;
+using StraySafe.Services.Users;
 
 namespace StraySafe.Controllers
 {
@@ -23,27 +20,6 @@ namespace StraySafe.Controllers
         public IActionResult Index()
         {
             return View();
-        }
-
-        [HttpPost("Submit")]
-        public IActionResult SubmitForm(Submission submission)
-        {
-            Coordinates coords = _imageMetadataClient.GetCoordinates(submission.Image);
-            return Ok("index");
-        }
-
-        [HttpPost("Login")]
-        public IActionResult Login(LoginRequest request)
-        {
-            bool isLoggedIn = _userClient.Login(request);
-            if (isLoggedIn)
-            {
-                return Ok(isLoggedIn);
-            }
-            else
-            {
-                return NotFound();
-            }
         }
     }
 }

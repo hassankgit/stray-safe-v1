@@ -1,8 +1,9 @@
-﻿namespace StraySafe.Nucleus.Database.Models.Users;
+﻿using Microsoft.AspNetCore.Identity;
 
-public class User
+namespace StraySafe.Nucleus.Database.Models.Users;
+
+public class User : IdentityUser
 {
-    public int Id { get; set; }
-    public required string Username { get; set; }
-    public required string Password { get; set; }
+    // not showing up in db because there's no get; set;, safe to delete without migration
+    public int NumberOfSubmissions = 0;
 }
