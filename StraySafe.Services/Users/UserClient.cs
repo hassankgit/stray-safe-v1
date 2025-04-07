@@ -1,8 +1,7 @@
 ﻿using StraySafe.Nucleus.Database;
-using StraySafe.Nucleus.Database.Models.Users;
 using StraySafe.Services.Admin.Models;
 
-namespace StraySafe.Services.Admin;
+namespace StraySafe.Services.Users;
 public class UserClient
 {
     private readonly DataContext _context;
@@ -13,16 +12,7 @@ public class UserClient
 
     public bool Login(LoginRequest request)
     {
-        User? user = _context.Users.FirstOrDefault(x => x.Username == request.Username);
-        if (user == null)
-        {
-            throw new Exception($"User with username {request.Username} not found.");
-        }
-
-        if (user.Password == request.Password)
-        {
-            return true;
-        }
+        // TODO: integrate with authentication
 
         return false;
     }
