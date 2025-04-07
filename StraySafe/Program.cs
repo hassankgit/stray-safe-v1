@@ -69,8 +69,8 @@ namespace StraySafe
             var app = builder.Build();
 
             // TODO: configure development environments
-            //if (!app.Environment.IsDevelopment())
-            //{
+            if (app.Environment.IsDevelopment())
+            {
                 app.UseExceptionHandler("/Home/Error");
                 app.UseHsts();
                 app.UseSwagger();
@@ -78,7 +78,7 @@ namespace StraySafe
                 {
                     c.SwaggerEndpoint("/swagger/v1/swagger.json", "StraySafe API v1");
                 });
-            //}
+            }
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();

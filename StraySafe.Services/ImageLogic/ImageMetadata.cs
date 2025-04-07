@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Metadata.Profiles.Exif;
-using StraySafe.Models;
+using StraySafe.Services.Models;
 
 namespace StraySafe.Services.ImageLogic
 {

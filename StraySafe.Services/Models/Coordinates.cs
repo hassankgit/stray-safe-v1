@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace StraySafe.Models;
+﻿namespace StraySafe.Services.Models;
 
 public class Coordinates
 {
