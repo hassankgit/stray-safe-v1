@@ -1,26 +1,24 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using StraySafe.Nucleus.Database.Models.Users;
-using StraySafe.Services.Admin;
+using StraySafe.Services.Users;
 
-namespace StraySafe.Controllers
+namespace StraySafe.Controllers;
+
+[Route("[controller]")]
+[ApiController]
+public class AdminController : ControllerBase
 {
-    [Route("[controller]")]
-    [ApiController]
-    public class AdminController : ControllerBase
+    private readonly AdminClient _adminClient;
+
+    public AdminController(AdminClient adminClient)
     {
-        private readonly AdminClient _adminClient;
+        _adminClient = adminClient;
+    }
 
-        public AdminController(AdminClient adminClient)
-        {
-            _adminClient = adminClient;
-        }
-
-        [HttpGet("AllUsers")]
-        public IActionResult GetAllUsers()
-        {
-            IEnumerable<User> users = _adminClient.GetAllUsers();
-            return Ok(users);
-        }
+    [HttpGet("AllUsers")]
+    public IActionResult GetAllUsers()
+    {
+        IEnumerable<User> users = _adminClient.GetAllUsers();
+        return Ok(users);
     }
 }
