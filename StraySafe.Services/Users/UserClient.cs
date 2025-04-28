@@ -28,6 +28,18 @@ public class UserClient
         });
     }
 
+    public async Task<string> GetNameById(string? id)
+    {
+        // TODO : Delete, only for testing auth
+        if (id == null)
+        {
+            return "";
+        }
+
+        User? user = await _userManager.FindByIdAsync(id);
+        return user?.UserName ?? user?.Email ?? "";
+    }
+
     public async Task<TokenResponse> Login(LoginRequest request)
     {
         if (request.Username == null || request.Password == null)

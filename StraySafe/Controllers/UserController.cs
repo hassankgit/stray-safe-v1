@@ -17,8 +17,10 @@ public class UserController : ControllerBase
     }
 
     [HttpGet("MyName")]
-    public IActionResult MyName()
+    public async Task<IActionResult> MyName()
     {
-        return Ok(User.Identity?.Name);
+        // TODO : Delete, only for testing auth
+        string name = await _userClient.GetNameById(User.Identity?.Name);
+        return Ok(name);
     }
 }
