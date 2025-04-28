@@ -8,17 +8,14 @@ namespace StraySafe.Nucleus.Database
     {
         public DataContext CreateDbContext(string[] args)
         {
-            var optionsBuilder = new DbContextOptionsBuilder<DataContext>();
-
-            var basePath = Path.Combine(Directory.GetCurrentDirectory(), "..", "StraySafe");
-
-            var config = new ConfigurationBuilder()
+            DbContextOptionsBuilder<DataContext> optionsBuilder = new DbContextOptionsBuilder<DataContext>();
+            string? basePath = Path.Combine(Directory.GetCurrentDirectory(), "..", "StraySafe");
+            IConfigurationRoot? config = new ConfigurationBuilder()
                 .SetBasePath(basePath)
                 .AddJsonFile("appsettings.json")
                 .Build();
 
-            var connectionString = config.GetConnectionString("dev");
-            optionsBuilder.UseNpgsql(connectionString);
+            optionsBuilder.UseNpgsql(config.GetSection("straySafe")["connectionString"]);
 
             return new DataContext(optionsBuilder.Options, config);
         }

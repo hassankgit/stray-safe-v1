@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using StraySafe.Services.Middleware;
+using StraySafe.Services.Admin;
 
 namespace StraySafe
 {
@@ -92,9 +93,10 @@ namespace StraySafe
             var config = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
                 .AddJsonFile("appsettings.json")
+                .AddUserSecrets<Program>()
                 .Build();
-            builder.Services.AddDbContext<DataContext>(options => options.UseNpgsql(config.GetConnectionString("dev")));
 
+            builder.Services.AddDbContext<DataContext>(options => options.UseNpgsql(config.GetSection("straySafe")["connectionString"]));
             var app = builder.Build();
 
             if (app.Environment.IsDevelopment())

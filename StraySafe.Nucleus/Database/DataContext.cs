@@ -15,7 +15,7 @@ public class DataContext : IdentityDbContext<User>
     }
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        optionsBuilder.UseNpgsql(_configuration.GetConnectionString("dev"));
+        optionsBuilder.UseNpgsql(_configuration.GetSection("straySafe")["connectionString"]);
     }
 
     protected override void OnModelCreating(ModelBuilder builder)
