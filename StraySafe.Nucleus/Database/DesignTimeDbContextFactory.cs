@@ -13,6 +13,7 @@ namespace StraySafe.Nucleus.Database
             IConfigurationRoot? config = new ConfigurationBuilder()
                 .SetBasePath(basePath)
                 .AddJsonFile("appsettings.json")
+                .AddUserSecrets<DataContext>()
                 .Build();
 
             optionsBuilder.UseNpgsql(config.GetConnectionString("straySafe"));
