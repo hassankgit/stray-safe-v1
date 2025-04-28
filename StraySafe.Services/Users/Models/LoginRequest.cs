@@ -1,4 +1,4 @@
-﻿namespace StraySafe.Services.Admin.Models;
+﻿namespace StraySafe.Services.Users.Models;
 
 public class LoginRequest
 {

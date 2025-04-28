@@ -7,15 +7,11 @@ namespace StraySafe.Nucleus.Database;
 
 public class DataContext : IdentityDbContext<User>
 {
-    protected readonly IConfiguration _configuration;
-    public DataContext(DbContextOptions<DataContext> options, IConfiguration configuration)
+    protected readonly IConfiguration _config;
+    public DataContext(DbContextOptions<DataContext> options, IConfiguration config)
         : base(options)
     {
-        _configuration = configuration;
-    }
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-    {
-        optionsBuilder.UseNpgsql(_configuration.GetConnectionString("dev"));
+        _config = config;
     }
 
     protected override void OnModelCreating(ModelBuilder builder)

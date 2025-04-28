@@ -1,30 +1,26 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using StraySafe.Services.Admin.Models;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using StraySafe.Services.Users;
 
-namespace StraySafe.Controllers
+namespace StraySafe.Controllers;
+
+[Authorize]
+[Route("[controller]")]
+[ApiController]
+public class UserController : ControllerBase
 {
-    [Route("[controller]")]
-    [ApiController]
-    public class UserController : ControllerBase
+    private readonly UserClient _userClient;
+
+    public UserController(UserClient userClient)
     {
-        private readonly UserClient _userClient;
+        _userClient = userClient;
+    }
 
-        public UserController(UserClient userClient)
-        {
-            _userClient = userClient;
-        }
-
-        [HttpPost("Login")]
-        public IActionResult Login([FromBody] LoginRequest request)
-        {
-            //  FLOW:
-            //      get login request
-            //      check if user is valid
-            //      if user valid, return a LoginResponse (user information, bearer token)
-            //      if user is invalid, throw 401
-            bool isLoggedIn = _userClient.Login(request);
-            return Ok(isLoggedIn);
-        }
+    [HttpGet("MyName")]
+    public async Task<IActionResult> MyName()
+    {
+        // TODO : Delete, only for testing auth
+        string name = await _userClient.GetNameById(User.Identity?.Name);
+        return Ok(name);
     }
 }
