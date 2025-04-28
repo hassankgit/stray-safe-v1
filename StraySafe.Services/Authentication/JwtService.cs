@@ -15,16 +15,16 @@ public class JwtService
 
     public string GenerateToken(string userId)
     {
-        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
-        var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+        SymmetricSecurityKey? key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
+        SigningCredentials? creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
-        var claims = new[]
-        {
+        Claim[] claims =
+        [
             new Claim(ClaimTypes.NameIdentifier, userId),
             new Claim(ClaimTypes.Name, userId)
-        };
+        ];
 
-        var token = new JwtSecurityToken(
+        JwtSecurityToken? token = new JwtSecurityToken(
             issuer: _config["Jwt:Issuer"],
             audience: _config["Jwt:Audience"],
             claims: claims,

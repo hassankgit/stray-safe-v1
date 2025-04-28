@@ -15,7 +15,7 @@ namespace StraySafe.Nucleus.Database
                 .AddJsonFile("appsettings.json")
                 .Build();
 
-            optionsBuilder.UseNpgsql(config.GetSection("straySafe")["connectionString"]);
+            optionsBuilder.UseNpgsql(config.GetConnectionString("straySafe"));
 
             return new DataContext(optionsBuilder.Options, config);
         }
