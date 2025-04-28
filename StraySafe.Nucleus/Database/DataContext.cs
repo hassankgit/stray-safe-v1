@@ -13,10 +13,6 @@ public class DataContext : IdentityDbContext<User>
     {
         _config = config;
     }
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-    {
-        optionsBuilder.UseNpgsql(_config.GetConnectionString("straySafe"));
-    }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
