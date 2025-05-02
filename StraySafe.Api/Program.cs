@@ -47,7 +47,7 @@ public class Program
         {
             options.AddDefaultPolicy(policy =>
             {
-                policy.WithOrigins("http://localhost:3000", "https://www.straysafe.net")
+                policy.WithOrigins("http://localhost:3000", "https://www.straysafe.net", "https://straysafe.net")
                       .AllowAnyMethod()
                       .AllowAnyHeader()
                       .AllowCredentials();
