@@ -1,16 +1,14 @@
 using StraySafe.Data.Database;
-using StraySafe.Data.Database.Models.Users;
 using StraySafe.Logic.ImageLogic;
 using StraySafe.Logic.Users;
 using StraySafe.Logic.Admin;
 using StraySafe.Logic.Middleware;
 using Microsoft.OpenApi.Models;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
-using StraySafe.Logic.Authentication;
+using Supabase;
 
 namespace StraySafe.Api;
 
@@ -24,6 +22,7 @@ public class Program
             .SetBasePath(Directory.GetCurrentDirectory())
             .AddJsonFile("appsettings.json")
             .AddUserSecrets<Program>()
+            .AddEnvironmentVariables()
             .Build();
 
         builder.Services.AddSingleton<IConfiguration>(config);
@@ -33,12 +32,10 @@ public class Program
         ConfigureCors(builder);
         ConfigureDatabase(builder, config);
         ConfigureAuthentication(builder, config);
-        ConfigureIdentity(builder);
         ConfigureClients(builder);
         ConfigureSwagger(builder);
 
         WebApplication? app = builder.Build();
-
         ConfigureMiddleware(app);
 
         app.Run();
@@ -50,7 +47,7 @@ public class Program
         {
             options.AddDefaultPolicy(policy =>
             {
-                policy.WithOrigins("http://localhost:3000")
+                policy.WithOrigins("http://localhost:3000", "https://www.straysafe.net", "https://straysafe.net")
                       .AllowAnyMethod()
                       .AllowAnyHeader()
                       .AllowCredentials();
@@ -66,47 +63,43 @@ public class Program
 
     private static void ConfigureAuthentication(WebApplicationBuilder builder, IConfiguration config)
     {
-        builder.Services.AddAuthentication(options =>
+        builder.Services.AddAuthorization();
+        builder.Services.AddAuthentication(o =>
         {
-            options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-            options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            o.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+            o.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            o.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
         })
-        .AddJwtBearer(options =>
+        .AddJwtBearer(o =>
         {
-            options.TokenValidationParameters = new TokenValidationParameters
+            o.TokenValidationParameters = new TokenValidationParameters
             {
-                ValidateIssuer = true,
-                ValidateAudience = true,
-                ValidateLifetime = true,
                 ValidateIssuerSigningKey = true,
-                ValidIssuer = config["Jwt:Issuer"],
-                ValidAudience = config["Jwt:Audience"],
-                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["Jwt:Key"]))
+                IssuerSigningKey = new SymmetricSecurityKey(
+                    Encoding.UTF8.GetBytes(builder.Configuration["Authentication:JwtSecret"]!)),
+                ValidateIssuer = false,
+                ValidateAudience = true,
+                ValidAudience = builder.Configuration["Authentication:ValidAudience"],
+                ValidIssuer = builder.Configuration["Authentication:ValidIssuer"],
             };
         });
     }
 
-    private static void ConfigureIdentity(WebApplicationBuilder builder)
-    {
-        builder.Services.AddIdentityCore<User>(options =>
-        {
-            options.Password.RequireDigit = false;
-            options.Password.RequireLowercase = false;
-            options.Password.RequireUppercase = false;
-            options.Password.RequireNonAlphanumeric = false;
-            options.Password.RequiredLength = 8;
-        })
-        .AddEntityFrameworkStores<DataContext>()
-        .AddDefaultTokenProviders();
-    }
-
     private static void ConfigureClients(WebApplicationBuilder builder)
     {
-        builder.Services.AddScoped<DataContext>();
-        builder.Services.AddScoped<JwtService>();
         builder.Services.AddScoped<ImageMetadataClient>();
         builder.Services.AddScoped<AdminClient>();
         builder.Services.AddScoped<UserClient>();
+
+        // configure supabase client!
+        string url = builder.Configuration["Supabase:Url"]!;
+        string key = builder.Configuration["Supabase:ServiceRoleKey"]!;
+        SupabaseOptions options = new()
+        {
+            AutoRefreshToken = true,
+            AutoConnectRealtime = true
+        };
+        builder.Services.AddSingleton(provider => new Supabase.Client(url, key, options));
     }
 
     private static void ConfigureSwagger(WebApplicationBuilder builder)
@@ -116,7 +109,7 @@ public class Program
         {
             c.SwaggerDoc("v1", new OpenApiInfo
             {
-                Title = "StraySafe API",
+                Title = "straysafe API",
                 Version = "v1",
                 Description = "First iteration of StraySafe API",
                 Contact = new OpenApiContact
@@ -127,24 +120,32 @@ public class Program
             });
             OpenApiSecurityScheme jwtSecurityScheme = new()
             {
-                Scheme = "bearer",
-                BearerFormat = "JWT",
-                Name = "Authorization",
+                Name = "JWT Authorization",
+                Description = "Enter JWT here",
                 In = ParameterLocation.Header,
                 Type = SecuritySchemeType.Http,
-                Description = "JWT Authorization header using the Bearer scheme.",
+                Scheme = JwtBearerDefaults.AuthenticationScheme,
+                BearerFormat = "JWT",
+            };
 
-                Reference = new OpenApiReference
+            c.AddSecurityDefinition(JwtBearerDefaults.AuthenticationScheme, jwtSecurityScheme);
+
+            OpenApiSecurityRequirement securityRequirement = new()
+            {
                 {
-                    Id = JwtBearerDefaults.AuthenticationScheme,
-                    Type = ReferenceType.SecurityScheme
+                    new OpenApiSecurityScheme
+                    {
+                        Reference = new OpenApiReference
+                        {
+                            Type = ReferenceType.SecurityScheme,
+                            Id = JwtBearerDefaults.AuthenticationScheme
+                        }
+                    },
+                    []
                 }
             };
-            c.AddSecurityDefinition(jwtSecurityScheme.Reference.Id, jwtSecurityScheme);
-            c.AddSecurityRequirement(new OpenApiSecurityRequirement
-            {
-                { jwtSecurityScheme, Array.Empty<string>() }
-            });
+
+            c.AddSecurityRequirement(securityRequirement);
         });
     }
 
@@ -156,7 +157,7 @@ public class Program
             app.UseSwagger();
             app.UseSwaggerUI(c =>
             {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "StraySafe API v1");
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "straysafe API v1");
             });
         }
         else

@@ -1,110 +1,119 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
-using StraySafe.Data.Database.Models.Users;
-using StraySafe.Logic.Authentication;
+﻿using Newtonsoft.Json;
+using StraySafe.Data.Database;
+using StraySafe.Logic.Authentication.Models;
 using StraySafe.Logic.Users.Models;
+using SupabaseReason = Supabase.Gotrue.Exceptions.FailureHint.Reason;
 
 namespace StraySafe.Logic.Users;
 public class UserClient
 {
-    private readonly UserManager<User> _userManager;
-    private readonly JwtService _jwtService;
+    private readonly Supabase.Client _supabase;
 
-    public UserClient(UserManager<User> userManager, JwtService jwtService)
+    public UserClient(Supabase.Client supabase)
     {
-        _userManager = userManager;
-        _jwtService = jwtService;
+        _supabase = supabase;
     }
 
-    public static void AddTokenCookieToResponse(HttpResponse response, TokenResponse token)
+    public string GetEmail()
     {
-        response.Cookies.Append("token", token.Token, new CookieOptions
-        {
-            HttpOnly = true,
-            Secure = true,
-            SameSite = SameSiteMode.None,
-            Path = "/",
-            Expires = DateTimeOffset.UtcNow.AddDays(1)
-        });
-    }
-
-    public async Task<string> GetNameById(string? id)
-    {
-        // TODO : Delete, only for testing auth
-        if (id == null)
-        {
-            return "";
-        }
-
-        User? user = await _userManager.FindByIdAsync(id);
-        return user?.UserName ?? user?.Email ?? "";
+        Supabase.Gotrue.User user = _supabase.Auth.CurrentUser ?? throw new InvalidOperationException("cannot find current user");
+        return user.Email ?? throw new InvalidOperationException($"no email found for user with id {user.Id}");
     }
 
     public async Task<TokenResponse> Login(LoginRequest request)
     {
-        if (request.Username == null || request.Password == null)
+        try
         {
-            throw new ArgumentException("username, email, and password are required");
+            if (request.Username == null || request.Password == null)
+            {
+                throw new ArgumentException("username, email, and password are required");
+            }
+
+            // TODO : make a supabase service that handles the try catch with these methods
+            // so that not every method has a try catch
+            Supabase.Gotrue.Session? result = await _supabase.Auth.SignIn(request.Username, request.Password);
+
+            if (result?.AccessToken != null)
+            {
+                return new TokenResponse()
+                {
+                    Token = result.AccessToken
+                };
+            }
+        }
+        catch (Supabase.Gotrue.Exceptions.GotrueException ex)
+        {
+            SupabaseError error = new SupabaseError();
+            error = JsonConvert.DeserializeObject<SupabaseError>(ex.Content!) ??
+                throw new JsonSerializationException("Failed to deserialize supabase error JSON");
+            error.Reason = ex.Reason;
+            string errorMessageToReturn = "";
+            switch (error.Reason)
+            {
+                case SupabaseReason.UserBadEmailAddress:
+                    errorMessageToReturn = "email address is invalid";
+                    break;
+                case SupabaseReason.UserBadPassword:
+                    errorMessageToReturn = "password is invalid";
+                    break;
+                case SupabaseReason.UserBadLogin:
+                    errorMessageToReturn = "email or password is wrong D:";
+                    break;
+            }
+            if (!string.IsNullOrEmpty(errorMessageToReturn))
+            {
+                throw new InvalidOperationException(errorMessageToReturn);
+            }
+
+            throw new InvalidOperationException($"unhandled error: {ex.Message}, reason {ex.Reason}");
         }
 
-        User? nameMatch = await _userManager.FindByNameAsync(request.Username);
-        if (nameMatch != null)
-        {
-            return await ValidatePassword(nameMatch, request.Password);
-        }
-        User? emailMatch = await _userManager.FindByEmailAsync(request.Username);
-        if (emailMatch != null)
-        {
-            return await ValidatePassword(emailMatch, request.Password);
-        }
-
-        throw new InvalidOperationException("invalid username or password");
+        throw new InvalidOperationException("login failed for unknown reason");
     }
 
     public async Task<TokenResponse> Register(RegisterRequest request)
     {
-        User? usernameMatch = await _userManager.FindByNameAsync(request.Username!);
-        if (usernameMatch != null)
+        try
         {
-            throw new InvalidOperationException("username already exists");
-        }
-
-        User? emailMatch = await _userManager.FindByEmailAsync(request.Email!);
-        if (emailMatch != null)
-        {
-            throw new InvalidOperationException("email is already in use");
-        }
-
-        User user = new()
-        {
-            UserName = request.Username,
-            Email = request.Email,
-        };
-
-        IdentityResult result = await _userManager.CreateAsync(user, request.Password!);
-        if (result.Succeeded)
-        {
-            string token = _jwtService.GenerateToken(user.Id);
-            return new TokenResponse
+            if (request.Email == null || request.Password == null)
             {
-                Token = token
-            };
+                throw new ArgumentException("please provide an email and password");
+            }
+            Supabase.Gotrue.Session? result = await _supabase.Auth.SignUp(request.Email, request.Password);
+            if (result?.User != null && result?.AccessToken != null)
+            {
+                return new TokenResponse()
+                {
+                    Token = result.AccessToken
+                };
+            }
+            throw new InvalidOperationException("registration failed for unknown reason");
         }
-
-        throw new InvalidOperationException(result.Errors.ToString());
-    }
-
-    private async Task<TokenResponse> ValidatePassword(User user, string password)
-    {
-        bool passwordMatch = await _userManager.CheckPasswordAsync(user, password);
-        if (!passwordMatch)
+        catch (Supabase.Gotrue.Exceptions.GotrueException ex)
         {
-            throw new InvalidOperationException("invalid username or password");
+            SupabaseError error = new SupabaseError();
+            error = JsonConvert.DeserializeObject<SupabaseError>(ex.Content!) ??
+                throw new JsonSerializationException("Failed to deserialize supabase error JSON");
+            error.Reason = ex.Reason;
+            string errorMessageToReturn = "";
+            switch (error.Reason)
+            {
+                case SupabaseReason.UserBadEmailAddress:
+                    errorMessageToReturn = "email address is invalid";
+                    break;
+                case SupabaseReason.UserBadPassword:
+                    errorMessageToReturn = "password is invalid";
+                    break;
+                case SupabaseReason.UserBadLogin:
+                    errorMessageToReturn = "email or password is wrong D:";
+                    break;
+            }
+            if (!string.IsNullOrEmpty(errorMessageToReturn))
+            {
+                throw new InvalidOperationException(errorMessageToReturn);
+            }
+
+            throw new InvalidOperationException($"unhandled error: {ex.Message}, reason {ex.Reason}");
         }
-        string token = _jwtService.GenerateToken(user.Id);
-        return new TokenResponse
-        {
-            Token = token
-        };
     }
 }

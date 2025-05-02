@@ -13,7 +13,6 @@ public class AuthController : ControllerBase
     public AuthController(UserClient userClient)
     {
         _userClient = userClient;
-
     }
 
     [ProducesResponseType(typeof(TokenResponse), StatusCodes.Status200OK)]
@@ -21,7 +20,14 @@ public class AuthController : ControllerBase
     public async Task<IActionResult> Login([FromBody] LoginRequest request)
     {
         TokenResponse token = await _userClient.Login(request);
-        UserClient.AddTokenCookieToResponse(Response, token);
+        Response.Cookies.Append("token", token.Token, new CookieOptions
+        {
+            HttpOnly = true,
+            Secure = true,
+            SameSite = SameSiteMode.None,
+            Expires = DateTimeOffset.UtcNow.AddHours(1),
+            Path = "/"
+        });
         return Ok(token);
     }
 
@@ -30,7 +36,14 @@ public class AuthController : ControllerBase
     public async Task<IActionResult> Register([FromBody] RegisterRequest request)
     {
         TokenResponse token = await _userClient.Register(request);
-        UserClient.AddTokenCookieToResponse(Response, token);
+        Response.Cookies.Append("token", token.Token, new CookieOptions
+        {
+            HttpOnly = true,
+            Secure = true,
+            SameSite = SameSiteMode.None,
+            Expires = DateTimeOffset.UtcNow.AddHours(1),
+            Path = "/"
+        });
         return Ok(token);
     }
 }
