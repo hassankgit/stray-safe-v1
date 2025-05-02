@@ -16,11 +16,11 @@ public class UserController : ControllerBase
         _userClient = userClient;
     }
 
-    [HttpGet("MyName")]
-    public async Task<IActionResult> MyName()
+    [HttpGet("MyEmail")]
+    public IActionResult MyName()
     {
         // TODO : Delete, only for testing auth
-        string name = await _userClient.GetNameById(User.Identity?.Name);
-        return Ok(name);
+        string email = _userClient.GetEmail();
+        return Ok(email);
     }
 }
