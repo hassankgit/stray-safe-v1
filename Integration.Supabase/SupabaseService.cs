@@ -17,7 +17,7 @@ public class SupabaseService : ISupabaseService
 {
     private readonly HttpClient _httpClient;
     private readonly JsonSerializerOptions _jsonOptions;
-    private readonly SupabaseClient _supabaseClient;
+    private readonly SupabaseClient _supabaseClient;            // will be needed for logging in and stuff
     private readonly IHttpContextAccessor _httpContextAccessor;
 
     public SupabaseService(HttpClient httpClient, JsonSerializerOptions jsonOptions, SupabaseClient supabaseClient, IHttpContextAccessor httpContextAccessor)
@@ -31,7 +31,6 @@ public class SupabaseService : ISupabaseService
     // to move to SupabaseUserRepository
     public async Task<User> GetCurrentUser()
     {
-        var token = _httpContextAccessor.HttpContext?.Request.Headers["Authorization"].FirstOrDefault()?.Substring("Bearer ".Length);
         User user = await SendRequestToUserEndpoint<User>("auth/v1/user") ?? throw new Exception("Failed to find current user");
         return user;
     }
@@ -40,7 +39,7 @@ public class SupabaseService : ISupabaseService
     public async Task<List<User>> GetAllUsersAsync()
     {
         SupabaseUserResponse response = await SendRequestToEndpoint<SupabaseUserResponse>("auth/v1/admin/users");
-        return response?.Users ?? new List<User>();
+        return response?.Users ?? [];
     }
 
     /// <summary>

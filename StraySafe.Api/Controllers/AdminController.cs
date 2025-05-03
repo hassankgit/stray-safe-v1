@@ -1,8 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using StraySafe.Data.Database.Models.Users;
 using StraySafe.Logic.Admin;
 
-namespace StraySafe.Controllers;
+namespace StraySafe.Api.Controllers;
 
 [Route("[controller]")]
 [ApiController]
