@@ -24,7 +24,7 @@
 </div>
 
 <p align="center">
-  <a href="#current features">features</a> •
+  <a href="#features">features</a> •
   <a href="#getting-started">getting started</a> •
   <a href="#running">running</a> •
   <a href="#configuration">configuration</a> •
