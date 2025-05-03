@@ -7,7 +7,6 @@
 <h4 align="center">(soon to be open-source!)</h4>
 
 <div align="center">
-
   <a href="https://forthebadge.com">
     <img src="./readmeassets/made-with-c-sharp.svg" alt="made with c#" />
   </a>
@@ -20,9 +19,8 @@
   <a href="https://forthebadge.com">
     <img src="./readmeassets/contains-technical-debt.svg" alt="technical debt(its a joke!)" />
   </a>
-
 </div>
-
+<br/>
 <p align="center">
   <a href="#features">features</a> •
   <a href="#getting-started">getting started</a> •
