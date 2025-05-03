@@ -1,5 +1,6 @@
-﻿using Newtonsoft.Json;
-using StraySafe.Data.Database;
+﻿using Integration.Supabase.Interfaces;
+using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json;
 using StraySafe.Logic.Authentication.Models;
 using StraySafe.Logic.Users.Models;
 using SupabaseReason = Supabase.Gotrue.Exceptions.FailureHint.Reason;
@@ -8,16 +9,30 @@ namespace StraySafe.Logic.Users;
 public class UserClient
 {
     private readonly Supabase.Client _supabase;
+    private readonly ISupabaseService _supabaseService;
+    private readonly IConfiguration _config;
 
-    public UserClient(Supabase.Client supabase)
+    public UserClient(Supabase.Client supabase, IConfiguration config, ISupabaseService supabaseService)
     {
         _supabase = supabase;
+        _supabaseService = supabaseService;
+        _config = config;
     }
 
     public string GetEmail()
     {
         Supabase.Gotrue.User user = _supabase.Auth.CurrentUser ?? throw new InvalidOperationException("cannot find current user");
         return user.Email ?? throw new InvalidOperationException($"no email found for user with id {user.Id}");
+    }
+
+    public async Task<List<User>> GetAllUsers()
+    {
+        return await _supabaseService.GetAllUsersAsync();
+    }
+
+    public async Task<User> GetCurrentUser()
+    {
+        return await _supabaseService.GetCurrentUser();
     }
 
     public async Task<TokenResponse> Login(LoginRequest request)

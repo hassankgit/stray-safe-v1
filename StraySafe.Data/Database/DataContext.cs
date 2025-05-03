@@ -1,11 +1,10 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-using StraySafe.Data.Database.Models.Users;
 
 namespace StraySafe.Data.Database;
 
-public class DataContext : IdentityDbContext<User>
+public class DataContext : DbContext
 {
     protected readonly IConfiguration _config;
     public DataContext(DbContextOptions<DataContext> options, IConfiguration config)

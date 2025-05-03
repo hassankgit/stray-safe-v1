@@ -23,6 +23,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Integration.Supabase\Integration.Supabase.csproj" />
     <ProjectReference Include="..\StraySafe.Logic\StraySafe.Logic.csproj" />
     <ProjectReference Include="..\StraySafe.Data\StraySafe.Data.csproj" />
   </ItemGroup>

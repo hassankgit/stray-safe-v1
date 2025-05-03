@@ -15,10 +15,10 @@ public class AdminController : ControllerBase
         _adminClient = adminClient;
     }
 
-    [HttpGet("AllUsers")]
-    public IActionResult GetAllUsers()
-    {
-        IEnumerable<User> users = _adminClient.GetAllUsers();
-        return Ok(users);
-    }
+    //[HttpGet("AllUsers")]
+    //public IActionResult GetAllUsers()
+    //{
+    //    IEnumerable<User> users = _adminClient.GetAllUsers();
+    //    return Ok(users);
+    //}
 }
