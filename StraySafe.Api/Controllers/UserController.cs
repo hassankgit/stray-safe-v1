@@ -1,4 +1,4 @@
-﻿using Integration.Supabase.Models.Users;
+﻿using Integration.Supabase.Models.Auth;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using StraySafe.Logic.Users;
@@ -17,16 +17,11 @@ public class UserController : ControllerBase
         _userClient = userClient;
     }
 
-    [HttpGet("MyEmail")]
+    [ProducesResponseType(typeof(User), StatusCodes.Status200OK)]
+    [HttpGet("Me")]
     public async Task<IActionResult> MyName()
     {
-        // TODO : Delete, only for testing auth
         User user = await _userClient.GetCurrentUser();
-        return Ok(user.Email);
-    }
-    [HttpGet("All")]
-    public async Task<IActionResult> GetAllUsers()
-    {
-        return Ok(await _userClient.GetAllUsers());
+        return Ok(user);
     }
 }

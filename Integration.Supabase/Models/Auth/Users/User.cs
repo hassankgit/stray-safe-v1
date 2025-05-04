@@ -1,8 +1,9 @@
 ﻿using System.Text.Json.Serialization;
-using Integration.Supabase.Models.Users;
+using Integration.Supabase.Models.Auth.Users;
 
 public class User
 {
+    // TODO : create UserDTO in StraySafe.Logic, map to it
     public required string Id { get; set; }
     public required string Email { get; set; }
     public string? Aud { get; set; }

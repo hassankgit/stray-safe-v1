@@ -1,6 +1,4 @@
-﻿using Newtonsoft.Json;
-
-namespace Integration.Supabase.Models.Users;
+﻿namespace Integration.Supabase.Models.Auth.Users;
 
 public class SupabaseUserResponse
 {

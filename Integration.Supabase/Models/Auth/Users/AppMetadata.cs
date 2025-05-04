@@ -1,4 +1,4 @@
-﻿namespace Integration.Supabase.Models.Users;
+﻿namespace Integration.Supabase.Models.Auth.Users;
 public class AppMetadata
 {
     public string? Provider { get; set; }
