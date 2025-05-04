@@ -113,6 +113,11 @@ a dedicated dev environment has not been set up yet for the database, mostly bec
 ```
 stray-safe-v1/
 |
+├── Integration.Supabase/       # Supabase API integration
+│   ├── Interfaces              # interfaces used by SupabaseService
+│   ├── Models/                 # Supabase API response/request models
+│   └── Services/               # services referenced by interfaces
+|
 ├── StraySafe.Api/              # main API project
 │   ├── Properties/
 │       └── launchSettings.json # profiles for local dev
@@ -124,7 +129,7 @@ stray-safe-v1/
 │   ├── Database/               # contains EF Core DbContext, DesignTimeDbContextFactory
 │       └── Models/             # contains db models
 │   ├── Migrations/             # EF Core migrations
-│   ├── ManualMigrations/       # temporary manual SQL migrations to PostgreSQL db
+│   └── ManualMigrations/       # temporary manual SQL migrations to PostgreSQL db
 |
 ├── StraySafe.Logic/            # handles business logic
 │   ├── Admin/                  # admin-related logic
