@@ -9,7 +9,7 @@ namespace StraySafe.Data.Database
         public DataContext CreateDbContext(string[] args)
         {
             DbContextOptionsBuilder<DataContext> optionsBuilder = new DbContextOptionsBuilder<DataContext>();
-            string? basePath = Path.Combine(Directory.GetCurrentDirectory(), "..", "StraySafe");
+            string? basePath = Path.Combine(Directory.GetCurrentDirectory(), "..", "StraySafe.Api");
             IConfigurationRoot? config = new ConfigurationBuilder()
                 .SetBasePath(basePath)
                 .AddJsonFile("appsettings.json")

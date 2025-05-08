@@ -12,6 +12,7 @@ using Supabase;
 using Integration.Supabase.Interfaces;
 using Integration.Supabase;
 using System.Text.Json;
+using StraySafe.Logic.Sightings;
 
 namespace StraySafe.Api;
 
@@ -90,6 +91,7 @@ public class Program
         builder.Services.AddScoped<ImageMetadataClient>();
         builder.Services.AddScoped<AdminClient>();
         builder.Services.AddScoped<UserClient>();
+        builder.Services.AddScoped<SightingClient>();
 
         string url = builder.Configuration["Supabase:Url"]!;
         string key = builder.Configuration["Supabase:ServiceRoleKey"]!;

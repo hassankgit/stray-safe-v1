@@ -1,9 +1,8 @@
-﻿using Integration.Supabase.Models.Auth;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using StraySafe.Logic.Users;
 
-namespace StraySafe.Controllers;
+namespace StraySafe.Api.Controllers;
 
 [Authorize]
 [Route("[controller]")]
