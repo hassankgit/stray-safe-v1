@@ -9,6 +9,7 @@ public class DataContext : DbContext
     protected readonly IConfiguration _config;
 
     public DbSet<SightingPreview> SightingPreviews { get; set; }
+    public DbSet<SightingDetail> SightingDetails { get; set; }
 
     public DataContext(DbContextOptions<DataContext> options, IConfiguration config)
         : base(options)
@@ -20,6 +21,9 @@ public class DataContext : DbContext
     {
         builder.Entity<SightingPreview>()
         .OwnsOne(x => x.Coordinates);
+
+        builder.Entity<SightingDetail>()
+       .OwnsOne(x => x.Tags);
 
         base.OnModelCreating(builder);
     }

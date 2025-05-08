@@ -10,4 +10,5 @@ public class SightingPreview
     public DateTime LastSpotted { get; set; }
     public required Coordinates Coordinates { get; set; }
     public required string SubmittedById { get; set; }
+    public int? SightingDetailId { get; set; }
 }

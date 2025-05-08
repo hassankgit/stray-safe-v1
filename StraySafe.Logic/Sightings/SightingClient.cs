@@ -16,7 +16,12 @@ public class SightingClient
 
     public List<SightingPreview> GetSightingPreviewsByCoordinates(Coordinates coordinates)
     {
-        MapBoundingBox boundingBox = GetBoundingBox(coordinates.Latitude, coordinates.Longitude, 1);
+        if (coordinates.Latitude == null || coordinates.Longitude == null)
+        {
+            return new List<SightingPreview>();
+        }
+
+        MapBoundingBox boundingBox = GetBoundingBox((double)coordinates.Latitude, (double)coordinates.Longitude, 1);
         List<SightingPreview> sightingPreviewsInRange = _context.SightingPreviews.Where(
                 x => x.Coordinates.Latitude <= boundingBox.MaxLat &&
                 x.Coordinates.Latitude >= boundingBox.MinLat &&
