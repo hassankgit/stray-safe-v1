@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace StraySafe.Logic.Users.Models;
+namespace Integration.Supabase.Models.Auth;
 
 public class RegisterRequest
 {
