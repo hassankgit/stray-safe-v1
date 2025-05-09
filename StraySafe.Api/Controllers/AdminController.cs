@@ -1,9 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using StraySafe.Data.Database.Models.Users;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using StraySafe.Logic.Admin;
 
-namespace StraySafe.Controllers;
+namespace StraySafe.Api.Controllers;
 
+[Authorize]
 [Route("[controller]")]
 [ApiController]
 public class AdminController : ControllerBase
@@ -15,10 +16,11 @@ public class AdminController : ControllerBase
         _adminClient = adminClient;
     }
 
-    [HttpGet("AllUsers")]
-    public IActionResult GetAllUsers()
+    [ProducesResponseType(typeof(List<User>), StatusCodes.Status200OK)]
+    [HttpGet("Users/All")]
+    public async Task<IActionResult> GetAllUsers()
     {
-        IEnumerable<User> users = _adminClient.GetAllUsers();
+        List<User> users = await _adminClient.GetAllUsers();
         return Ok(users);
     }
 }

@@ -1,18 +1,19 @@
-﻿using StraySafe.Data.Database;
-using StraySafe.Data.Database.Models.Users;
+﻿using Integration.Supabase;
+using Integration.Supabase.Interfaces;
+using StraySafe.Data.Database;
 
 namespace StraySafe.Logic.Admin;
 public class AdminClient
 {
-    private readonly DataContext _context;
-    public AdminClient(DataContext context)
+    private readonly ISupabaseService _supabaseService;
+    public AdminClient(ISupabaseService supabaseService)
     {
-        _context = context;
+        _supabaseService = supabaseService;
     }
 
-    public IEnumerable<User> GetAllUsers()
+    public async Task<List<User>> GetAllUsers()
     {
-        IEnumerable<User> users = _context.Users.ToList();
+        List<User> users = await _supabaseService.Admin.GetAllUsersAsync();
         return users;
     }
 }
