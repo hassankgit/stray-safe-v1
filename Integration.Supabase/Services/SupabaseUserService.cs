@@ -19,7 +19,18 @@ internal class SupabaseUserService : ISupabaseUserService
 
     public async Task<TokenResponse> Login(LoginRequest request)
     {
-        return await _supabaseService.SendPostAsUser<TokenResponse>("auth/v1/token?grant_type=password", request);
+        try
+        {
+            return await _supabaseService.SendPostAsUser<TokenResponse>("auth/v1/token?grant_type=password", request);
+        }
+        catch
+        {
+            return await _supabaseService.SendPostAsUser<TokenResponse>("auth/v1/token?grant_type=password", new LoginRequest()
+            {
+                Email = request.Username,
+                Password = request.Password,
+            });
+        }
     }
 
     public async Task<TokenResponse> Register(RegisterRequest request)

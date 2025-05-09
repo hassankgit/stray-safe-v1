@@ -12,8 +12,8 @@ using StraySafe.Data.Database;
 namespace StraySafe.Data.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20250508193044_AddedSightingPreview")]
-    partial class AddedSightingPreview
+    [Migration("20250509001837_FixingSightingConfiguration")]
+    partial class FixingSightingConfiguration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -24,6 +24,53 @@ namespace StraySafe.Data.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
+
+            modelBuilder.Entity("StraySafe.Data.Database.Models.Sightings.SightingDetail", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("Age")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Breed")
+                        .HasColumnType("text");
+
+                    b.Property<string>("ImageUrl")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("LastSpotted")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Location")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Notes")
+                        .HasColumnType("text");
+
+                    b.Property<int>("Sex")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Species")
+                        .HasColumnType("text");
+
+                    b.Property<string>("SubmittedById")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("SubmittedByName")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("SightingDetails");
+                });
 
             modelBuilder.Entity("StraySafe.Data.Database.Models.Sightings.SightingPreview", b =>
                 {
@@ -45,6 +92,9 @@ namespace StraySafe.Data.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("text");
 
+                    b.Property<int?>("SightingDetailId")
+                        .HasColumnType("integer");
+
                     b.Property<string>("Species")
                         .HasColumnType("text");
 
@@ -55,6 +105,33 @@ namespace StraySafe.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("SightingPreviews");
+                });
+
+            modelBuilder.Entity("StraySafe.Data.Database.Models.Sightings.SightingDetail", b =>
+                {
+                    b.OwnsOne("StraySafe.Data.Database.Models.Sightings.SightingTags", "Tags", b1 =>
+                        {
+                            b1.Property<int>("SightingDetailId")
+                                .HasColumnType("integer");
+
+                            b1.Property<int>("Behavior")
+                                .HasColumnType("integer");
+
+                            b1.Property<int>("Health")
+                                .HasColumnType("integer");
+
+                            b1.Property<int>("Status")
+                                .HasColumnType("integer");
+
+                            b1.HasKey("SightingDetailId");
+
+                            b1.ToTable("SightingDetails");
+
+                            b1.WithOwner()
+                                .HasForeignKey("SightingDetailId");
+                        });
+
+                    b.Navigation("Tags");
                 });
 
             modelBuilder.Entity("StraySafe.Data.Database.Models.Sightings.SightingPreview", b =>

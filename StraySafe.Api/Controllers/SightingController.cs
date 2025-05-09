@@ -24,4 +24,12 @@ public class SightingController : ControllerBase
         List<SightingPreview> sightingPreviews = _sightingClient.GetSightingPreviewsByCoordinates(coordinates);
         return Ok(sightingPreviews);
     }
+
+    [ProducesResponseType(typeof(SightingDetail), StatusCodes.Status200OK)]
+    [HttpGet("Detail/{id}")]
+    public IActionResult GetSightingDetailById(int id)
+    {
+        SightingDetail? detail = _sightingClient.GetSightingDetailById(id);
+        return Ok(detail);
+    }
 }

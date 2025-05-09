@@ -1,4 +1,5 @@
-﻿using SQLitePCL;
+﻿using Microsoft.EntityFrameworkCore;
+using SQLitePCL;
 using StraySafe.Data.Database;
 using StraySafe.Data.Database.Models.Sightings;
 using StraySafe.Logic.Sightings.Models;
@@ -12,6 +13,12 @@ public class SightingClient
     public SightingClient(DataContext context)
     {
         _context = context;
+    }
+
+    public SightingDetail? GetSightingDetailById(int id)
+    {
+        SightingDetail? detail = _context.SightingDetails.Where(x => x.Id == id).FirstOrDefault();
+        return detail;
     }
 
     public List<SightingPreview> GetSightingPreviewsByCoordinates(Coordinates coordinates)

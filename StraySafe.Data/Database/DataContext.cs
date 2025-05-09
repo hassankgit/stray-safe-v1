@@ -20,10 +20,28 @@ public class DataContext : DbContext
     protected override void OnModelCreating(ModelBuilder builder)
     {
         builder.Entity<SightingPreview>()
-        .OwnsOne(x => x.Coordinates);
+            .OwnsOne(x => x.Coordinates);
 
         builder.Entity<SightingDetail>()
-       .OwnsOne(x => x.Tags);
+        .OwnsOne(x => x.Tags, tags =>
+        {
+            tags.Property(t => t.Status)
+                .HasConversion<int>();
+
+            tags.Property(t => t.Behavior)
+                .HasConversion<int>();
+
+            tags.Property(t => t.Health)
+                .HasConversion<int>();
+        });
+
+        builder.Entity<SightingDetail>()
+            .Property(x => x.Age)
+            .HasConversion<int>();
+
+        builder.Entity<SightingDetail>()
+            .Property(x => x.Sex)
+            .HasConversion<int>();
 
         base.OnModelCreating(builder);
     }

@@ -28,7 +28,11 @@ public class Program
             .AddEnvironmentVariables()
             .Build();
         builder.Services.AddSingleton<IConfiguration>(config);
-        builder.Services.AddControllersWithViews();
+        builder.Services.AddControllersWithViews()
+            .AddJsonOptions(options =>
+        {
+            options.JsonSerializerOptions.Converters.Add(new System.Text.Json.Serialization.JsonStringEnumConverter());
+        }); ;
 
         ConfigureCors(builder);
         ConfigureDatabase(builder, config);
