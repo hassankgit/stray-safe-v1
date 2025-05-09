@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using StraySafe.Logic.Users;
 
-namespace StraySafe.Controllers;
+namespace StraySafe.Api.Controllers;
 
 [Authorize]
 [Route("[controller]")]
@@ -16,11 +16,11 @@ public class UserController : ControllerBase
         _userClient = userClient;
     }
 
-    [HttpGet("MyEmail")]
-    public IActionResult MyName()
+    [ProducesResponseType(typeof(User), StatusCodes.Status200OK)]
+    [HttpGet("Me")]
+    public async Task<IActionResult> MyName()
     {
-        // TODO : Delete, only for testing auth
-        string email = _userClient.GetEmail();
-        return Ok(email);
+        User user = await _userClient.GetCurrentUser();
+        return Ok(user);
     }
 }
