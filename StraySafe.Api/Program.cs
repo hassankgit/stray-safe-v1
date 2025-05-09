@@ -9,6 +9,10 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Supabase;
+using Integration.Supabase.Interfaces;
+using Integration.Supabase;
+using System.Text.Json;
+using StraySafe.Logic.Sightings;
 
 namespace StraySafe.Api;
 
@@ -17,22 +21,23 @@ public class Program
     public static void Main(string[] args)
     {
         WebApplicationBuilder? builder = WebApplication.CreateBuilder(args);
-
         IConfigurationRoot? config = new ConfigurationBuilder()
             .SetBasePath(Directory.GetCurrentDirectory())
             .AddJsonFile("appsettings.json")
             .AddUserSecrets<Program>()
             .AddEnvironmentVariables()
             .Build();
-
         builder.Services.AddSingleton<IConfiguration>(config);
-
-        builder.Services.AddControllersWithViews();
+        builder.Services.AddControllersWithViews()
+            .AddJsonOptions(options =>
+        {
+            options.JsonSerializerOptions.Converters.Add(new System.Text.Json.Serialization.JsonStringEnumConverter());
+        }); ;
 
         ConfigureCors(builder);
         ConfigureDatabase(builder, config);
-        ConfigureAuthentication(builder, config);
-        ConfigureClients(builder);
+        ConfigureAuthentication(builder);
+        ConfigureClientsAndServices(builder);
         ConfigureSwagger(builder);
 
         WebApplication? app = builder.Build();
@@ -61,7 +66,7 @@ public class Program
             options.UseNpgsql(config.GetConnectionString("straySafe")));
     }
 
-    private static void ConfigureAuthentication(WebApplicationBuilder builder, IConfiguration config)
+    private static void ConfigureAuthentication(WebApplicationBuilder builder)
     {
         builder.Services.AddAuthorization();
         builder.Services.AddAuthentication(o =>
@@ -85,13 +90,13 @@ public class Program
         });
     }
 
-    private static void ConfigureClients(WebApplicationBuilder builder)
+    private static void ConfigureClientsAndServices(WebApplicationBuilder builder)
     {
         builder.Services.AddScoped<ImageMetadataClient>();
         builder.Services.AddScoped<AdminClient>();
         builder.Services.AddScoped<UserClient>();
+        builder.Services.AddScoped<SightingClient>();
 
-        // configure supabase client!
         string url = builder.Configuration["Supabase:Url"]!;
         string key = builder.Configuration["Supabase:ServiceRoleKey"]!;
         SupabaseOptions options = new()
@@ -99,7 +104,20 @@ public class Program
             AutoRefreshToken = true,
             AutoConnectRealtime = true
         };
+        builder.Services.AddHttpContextAccessor();
+        builder.Services.AddHttpClient<ISupabaseService, SupabaseService>(client =>
+        {
+            client.BaseAddress = new Uri(builder.Configuration["Supabase:Url"]!);
+            client.DefaultRequestHeaders.Authorization =
+                new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", builder.Configuration["Supabase:ServiceRoleKey"]!);
+            client.DefaultRequestHeaders.Add("apiKey", builder.Configuration["Supabase:apiKey"]!);
+        });
+
         builder.Services.AddSingleton(provider => new Supabase.Client(url, key, options));
+        builder.Services.AddSingleton(new JsonSerializerOptions
+        {
+            PropertyNameCaseInsensitive = true
+        });
     }
 
     private static void ConfigureSwagger(WebApplicationBuilder builder)
@@ -111,11 +129,11 @@ public class Program
             {
                 Title = "straysafe API",
                 Version = "v1",
-                Description = "First iteration of StraySafe API",
+                Description = "welcome to straysafe API",
                 Contact = new OpenApiContact
                 {
-                    Name = "Test Contact",
-                    Email = "testing@test.com"
+                    Name = "hassan khan",
+                    Email = "hk656.2004@gmail.com"
                 }
             });
             OpenApiSecurityScheme jwtSecurityScheme = new()
