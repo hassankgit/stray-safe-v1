@@ -37,7 +37,7 @@ public class ExceptionHandlingMiddleware
 
     private async Task HandleExceptionAsync(HttpContext context, int statusCode, Exception ex)
     {
-        _logger.LogError(ex, "Error occurred.");
+        _logger.LogError(ex, "error occurred");
 
         context.Response.StatusCode = statusCode;
         context.Response.ContentType = "application/json";

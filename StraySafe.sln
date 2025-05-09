@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StraySafe.Logic", "StraySaf
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StraySafe.Data", "StraySafe.Data\StraySafe.Data.csproj", "{AC221BA1-0489-4723-8822-3681C62CB130}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Integration.Supabase", "Integration.Supabase\Integration.Supabase.csproj", "{4059D533-FAE6-41DE-B452-0136E646A580}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{AC221BA1-0489-4723-8822-3681C62CB130}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AC221BA1-0489-4723-8822-3681C62CB130}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AC221BA1-0489-4723-8822-3681C62CB130}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4059D533-FAE6-41DE-B452-0136E646A580}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4059D533-FAE6-41DE-B452-0136E646A580}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4059D533-FAE6-41DE-B452-0136E646A580}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4059D533-FAE6-41DE-B452-0136E646A580}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
