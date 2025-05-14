@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using SQLitePCL;
 using StraySafe.Data.Database;
 using StraySafe.Data.Database.Models.Sightings;
@@ -9,16 +10,19 @@ namespace StraySafe.Logic.Sightings;
 public class SightingClient
 {
     private readonly DataContext _context;
+    private readonly IMapper _mapper;
 
-    public SightingClient(DataContext context)
+    public SightingClient(DataContext context, IMapper mapper)
     {
         _context = context;
+        _mapper = mapper;
     }
 
-    public SightingDetail? GetSightingDetailById(int id)
+    public SightingDetailDto? GetSightingDetailById(int id)
     {
         SightingDetail? detail = _context.SightingDetails.Where(x => x.Id == id).FirstOrDefault();
-        return detail;
+        SightingDetailDto dto = _mapper.Map<SightingDetailDto>(detail);
+        return dto;
     }
 
     public List<SightingPreview> GetSightingPreviewsByCoordinates(Coordinates coordinates)
