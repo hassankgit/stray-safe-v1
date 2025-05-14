@@ -6,9 +6,9 @@ public class SightingDetailDto
     public string? Name { get; set; }
     public string? Species { get; set; }
     public string? Breed { get; set; }
-    public string? Age { get; set; } //
-    public string? Sex { get; set; } // 
-    public List<string>? Tags { get; set; } //
+    public string? Age { get; set; }
+    public string? Sex { get; set; }
+    public List<string>? Tags { get; set; }
     public string? ImageUrl { get; set; }
     public DateTime LastSpotted { get; set; }
     public string? Location { get; set; }

@@ -93,7 +93,6 @@ public class Program
 
     private static void ConfigureClientsAndServices(WebApplicationBuilder builder)
     {
-        // testing automapper
         builder.Services.AddAutoMapper(typeof(MappingProfile));
         builder.Services.AddScoped<ImageMetadataClient>();
         builder.Services.AddScoped<AdminClient>();
