@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using StraySafe.Logic.Users;
+using StraySafe.Logic.Users.Models;
 
 namespace StraySafe.Api.Controllers;
 
@@ -16,11 +17,11 @@ public class UserController : ControllerBase
         _userClient = userClient;
     }
 
-    [ProducesResponseType(typeof(User), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(UserDto), StatusCodes.Status200OK)]
     [HttpGet("Me")]
     public async Task<IActionResult> MyName()
     {
-        User user = await _userClient.GetCurrentUser();
+        UserDto user = await _userClient.GetCurrentUser();
         return Ok(user);
     }
 }
