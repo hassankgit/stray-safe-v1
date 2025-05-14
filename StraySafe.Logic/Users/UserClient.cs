@@ -30,20 +30,14 @@ public class UserClient
     public async Task<TokenDto> Login(LoginRequest request)
     {
         TokenResponse response = await _supabaseService.User.Login(request);
-        TokenDto dto = new()
-        {
-            Token = response.Token
-        };
+        TokenDto dto = _mapper.Map<TokenDto>(response);
         return dto;
     }
 
     public async Task<TokenDto> Register(RegisterRequest request)
     {
         TokenResponse response = await _supabaseService.User.Register(request);
-        TokenDto dto = new()
-        {
-            Token = response.Token
-        };
+        TokenDto dto = _mapper.Map<TokenDto>(response);
         return dto;
     }
 }

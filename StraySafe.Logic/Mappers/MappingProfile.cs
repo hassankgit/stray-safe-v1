@@ -8,7 +8,7 @@ public class MappingProfile
     {
         MapperConfiguration config = new MapperConfiguration(c =>
         {
-            c.AddProfile(new UserMapper());
+            c.AddProfile(new AuthMapper());
             c.AddProfile(new SightingDetailMapper());
         });
 

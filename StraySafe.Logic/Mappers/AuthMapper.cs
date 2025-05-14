@@ -1,12 +1,14 @@
 ﻿using AutoMapper;
+using Integration.Supabase.Models.Auth;
 using StraySafe.Logic.Users.Models;
 
 namespace StraySafe.Logic.Mappers;
 
-public class UserMapper : Profile
+public class AuthMapper : Profile
 {
-    public UserMapper()
+    public AuthMapper()
     {
         CreateMap<User, UserDto>();
+        CreateMap<TokenResponse, TokenDto>();
     }
 }
