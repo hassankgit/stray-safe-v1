@@ -1,5 +1,6 @@
 ﻿using System.Text.Json;
 using Integration.Supabase.Interfaces;
+using Integration.Supabase.Models.Auth;
 using Microsoft.AspNetCore.Http;
 
 namespace Integration.Supabase;
@@ -100,16 +101,15 @@ public class SupabaseService : ISupabaseService
 
         // base address will be in the form of https://abcdefghijklm.supabase.co/
         HttpResponseMessage? response = await _httpClient.GetAsync($"{_httpClient.BaseAddress}{endpoint}");
-     
         if (!response.IsSuccessStatusCode)
         {
-            throw new Exception($"supabase error: {response.StatusCode} - {await response.Content.ReadAsStringAsync()}");
+            SupabaseError error = await HandleSupabaseError(response);
+            throw new Exception(error.Message ?? "Unknown error");
         }
 
         string? json = await response.Content.ReadAsStringAsync();
-
         return JsonSerializer.Deserialize<T>(json, _jsonOptions) ??
-            throw new JsonException($"supabase service: failed to deserialize json of type {typeof(T)}");
+            throw new JsonException($"Supabase Error: Failed to deserialize json of type {typeof(T)}");
 
     }
 
@@ -142,13 +142,20 @@ public class SupabaseService : ISupabaseService
 
         if (!response.IsSuccessStatusCode)
         {
-            throw new Exception($"supabase error: {response.StatusCode} - {await response.Content.ReadAsStringAsync()}");
+            SupabaseError error = await HandleSupabaseError(response);
+            throw new Exception(error.Message ?? "Unknown error");
         }
 
         string? json = await response.Content.ReadAsStringAsync();
-
         return JsonSerializer.Deserialize<T>(json, _jsonOptions) ??
-            throw new JsonException($"supabase service: failed to deserialize json of type {typeof(T)}");
+            throw new JsonException($"Supabase Error: Failed to deserialize json of type {typeof(T)}");
 
+    }
+
+    private async Task<SupabaseError> HandleSupabaseError(HttpResponseMessage response)
+    {
+        string errorJson = await response.Content.ReadAsStringAsync();
+        SupabaseError error = JsonSerializer.Deserialize<SupabaseError>(errorJson, _jsonOptions) ?? new SupabaseError(500, "unknown", "Unhandled Supabase error");
+        return error;
     }
 }
