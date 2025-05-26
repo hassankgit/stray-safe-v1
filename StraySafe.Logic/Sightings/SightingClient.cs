@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
-using Microsoft.EntityFrameworkCore;
-using SQLitePCL;
+using Integration.Supabase.Interfaces;
+using Microsoft.AspNetCore.Http;
 using StraySafe.Data.Database;
 using StraySafe.Data.Database.Models.Sightings;
 using StraySafe.Logic.Sightings.Models;
@@ -11,11 +11,15 @@ public class SightingClient
 {
     private readonly DataContext _context;
     private readonly IMapper _mapper;
+    private readonly ISupabaseService _supabaseService;
 
-    public SightingClient(DataContext context, IMapper mapper)
+    public SightingClient(DataContext context,
+                          IMapper mapper,
+                          ISupabaseService supabaseService)
     {
         _context = context;
         _mapper = mapper;
+        _supabaseService = supabaseService;
     }
 
     public SightingDetailDto? GetSightingDetailById(int id)
@@ -23,6 +27,11 @@ public class SightingClient
         SightingDetail? detail = _context.SightingDetails.Where(x => x.Id == id).FirstOrDefault();
         SightingDetailDto dto = _mapper.Map<SightingDetailDto>(detail);
         return dto;
+    }
+
+    public async Task<string> UploadImage(IFormFile image)
+    {
+        return await _supabaseService.User.UploadImage(image);
     }
 
     public List<SightingPreview> GetSightingPreviewsByCoordinates(Coordinates coordinates)

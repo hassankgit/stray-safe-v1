@@ -1,4 +1,3 @@
-﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using StraySafe.Data.Database.Models.Sightings;
 using StraySafe.Logic.Sightings;
@@ -32,5 +31,12 @@ public class SightingController : ControllerBase
     {
         SightingDetailDto? detail = _sightingClient.GetSightingDetailById(id);
         return Ok(detail);
+    }
+
+    [HttpPost("Upload")]
+    public async Task<IActionResult> UploadSighting(IFormFile image)
+    {
+        string url = await _sightingClient.UploadImage(image);
+        return Ok(url);
     }
 }
