@@ -1,6 +1,7 @@
 ﻿using Integration.Supabase;
 using Integration.Supabase.Interfaces;
 using Integration.Supabase.Models.Auth;
+using Microsoft.AspNetCore.Http;
 
 internal class SupabaseUserService : ISupabaseUserService
 {
@@ -36,6 +37,11 @@ internal class SupabaseUserService : ISupabaseUserService
     public async Task<TokenResponse> Register(RegisterRequest request)
     {
         return await _supabaseService.SendPostAsUser<TokenResponse>("auth/v1/signup", request);
+    }
+
+    public async Task<string> UploadImage(IFormFile file)
+    {
+        return await _supabaseService.UploadImage(file);
     }
 
 }

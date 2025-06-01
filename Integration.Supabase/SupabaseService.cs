@@ -1,14 +1,16 @@
 ﻿using System.Text.Json;
 using Integration.Supabase.Interfaces;
+using Integration.Supabase.Models.Auth;
 using Microsoft.AspNetCore.Http;
+using SupabaseClient = global::Supabase.Client;
+using SupabaseFileOptions = global::Supabase.Storage.FileOptions;
 
 namespace Integration.Supabase;
 
 /// <summary>
 /// Supabase's C# NuGet Package does not come out of the box with all of the functionality
 /// that they have on their REST API. This service is to fill in the gaps; make manual
-/// calls wherever they don't have their own method. Currently, no Supabase C# NuGet Package
-/// method is being used.
+/// calls wherever they don't have their own method.
 /// </summary>
 public class SupabaseService : ISupabaseService
 {
@@ -17,17 +19,20 @@ public class SupabaseService : ISupabaseService
     private readonly HttpClient _httpClient;
     private readonly JsonSerializerOptions _jsonOptions;
     private readonly IHttpContextAccessor _httpContextAccessor;
+    private readonly SupabaseClient _supabaseClient;
 
     public ISupabaseAdminService Admin { get; }
     public ISupabaseUserService User { get; }
 
     public SupabaseService(HttpClient httpClient,
                            JsonSerializerOptions jsonOptions,
-                           IHttpContextAccessor httpContextAccessor)
+                           IHttpContextAccessor httpContextAccessor,
+                           SupabaseClient supabaseClient)
     {
         _httpClient = httpClient;
         _jsonOptions = jsonOptions;
         _httpContextAccessor = httpContextAccessor;
+        _supabaseClient = supabaseClient;
 
         Admin = new SupabaseAdminService(this);
         User = new SupabaseUserService(this);
@@ -100,16 +105,15 @@ public class SupabaseService : ISupabaseService
 
         // base address will be in the form of https://abcdefghijklm.supabase.co/
         HttpResponseMessage? response = await _httpClient.GetAsync($"{_httpClient.BaseAddress}{endpoint}");
-     
         if (!response.IsSuccessStatusCode)
         {
-            throw new Exception($"supabase error: {response.StatusCode} - {await response.Content.ReadAsStringAsync()}");
+            SupabaseError error = await HandleSupabaseError(response);
+            throw new Exception(error.Message ?? "Unknown error");
         }
 
         string? json = await response.Content.ReadAsStringAsync();
-
         return JsonSerializer.Deserialize<T>(json, _jsonOptions) ??
-            throw new JsonException($"supabase service: failed to deserialize json of type {typeof(T)}");
+            throw new JsonException($"Supabase Error: Failed to deserialize json of type {typeof(T)}");
 
     }
 
@@ -142,13 +146,41 @@ public class SupabaseService : ISupabaseService
 
         if (!response.IsSuccessStatusCode)
         {
-            throw new Exception($"supabase error: {response.StatusCode} - {await response.Content.ReadAsStringAsync()}");
+            SupabaseError error = await HandleSupabaseError(response);
+            throw new Exception(error.Message ?? "Unknown error");
         }
 
         string? json = await response.Content.ReadAsStringAsync();
-
         return JsonSerializer.Deserialize<T>(json, _jsonOptions) ??
-            throw new JsonException($"supabase service: failed to deserialize json of type {typeof(T)}");
+            throw new JsonException($"Supabase Error: Failed to deserialize json of type {typeof(T)}");
 
+    }
+
+    public async Task<string> UploadImage(IFormFile file)
+    {
+        string bucket = "sighting-preview-thumbnails";
+        string uniqueFileName = $"{DateTime.UtcNow.Ticks}_{file.FileName}";
+
+        MemoryStream? ms = new();
+        await file.CopyToAsync(ms);
+        byte[] fileBytes = ms.ToArray();
+
+        await _supabaseClient
+            .Storage
+            .From(bucket)
+            .Upload(fileBytes, uniqueFileName, new SupabaseFileOptions
+            {
+                CacheControl = "3600",
+                Upsert = true
+            });
+
+        return _supabaseClient.Storage.From(bucket).GetPublicUrl(uniqueFileName);
+    }
+
+    private async Task<SupabaseError> HandleSupabaseError(HttpResponseMessage response)
+    {
+        string errorJson = await response.Content.ReadAsStringAsync();
+        SupabaseError error = JsonSerializer.Deserialize<SupabaseError>(errorJson, _jsonOptions) ?? new SupabaseError(500, "unknown", "Unhandled Supabase error");
+        return error;
     }
 }
