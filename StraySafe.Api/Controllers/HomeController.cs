@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 
-namespace StraySafe.Controllers
+namespace StraySafe.Api.Controllers
 {
     public class HomeController : Controller
     {
