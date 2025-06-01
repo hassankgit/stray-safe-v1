@@ -51,8 +51,8 @@ public class SightingClient
             return new List<SightingPreview>();
         }
 
-        // Radius currently sent to 100 miles TODO: user defined radius?
-        MapBoundingBox boundingBox = GetBoundingBox((double)coordinates.Latitude, (double)coordinates.Longitude, 100);
+        // Radius currently sent to 3000 miles TODO: user defined radius?
+        MapBoundingBox boundingBox = GetBoundingBox((double)coordinates.Latitude, (double)coordinates.Longitude, 3000);
         List<SightingPreview> sightingPreviewsInRange = _context.SightingPreviews.Where(
                 x => x.Coordinates.Latitude <= boundingBox.MaxLat &&
                 x.Coordinates.Latitude >= boundingBox.MinLat &&
