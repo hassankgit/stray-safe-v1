@@ -90,13 +90,13 @@ public class SightingClient
         {
             SightingDetail detail = new()
             {
-                Name = request.Name,
-                Species = request.Species,
-                Breed = request.Breed,
+                Name = request.Name.NullIfWhiteSpace(),
+                Species = request.Species.NullIfWhiteSpace(),
+                Breed = request.Breed.NullIfWhiteSpace(),
                 Age = request.Age,
                 Sex = request.Sex,
                 ImageUrl = request.ImageUrl,
-                LastSpotted = request.DateTime ?? DateTime.UtcNow,
+                LastSpotted = DateTime.SpecifyKind(request.DateTime ?? DateTime.UtcNow, DateTimeKind.Utc),
                 Location = request.Location,
                 Tags = new SightingTags()
                 {
@@ -104,7 +104,7 @@ public class SightingClient
                     Behavior = request.Behavior,
                     Health = request.Health,
                 },
-                Notes = request.Notes,
+                Notes = request.Notes.NullIfWhiteSpace(),
                 SubmittedById = user.Id,
                 SubmittedByName = user.Email,
             };
@@ -114,11 +114,11 @@ public class SightingClient
 
             SightingPreview preview = new()
             {
-                Name = request.Name,
-                Species = request.Species,
-                Breed = request.Breed,
-                ImageUrl = request.ImageUrl,
-                LastSpotted = request.DateTime ?? DateTime.UtcNow,
+                Name = detail.Name,
+                Species = detail.Species,
+                Breed = detail.Breed,
+                ImageUrl = detail.ImageUrl,
+                LastSpotted = detail.LastSpotted,
                 Coordinates = request.Coordinates,
                 SubmittedById = user.Id,
                 SightingDetailId = detail.Id,
