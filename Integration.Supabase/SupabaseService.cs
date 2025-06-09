@@ -50,7 +50,7 @@ public class SupabaseService : ISupabaseService
     /// <exception cref="JsonException"></exception>
     public async Task<T> SendPostAsUser<T>(string endpoint, object requestBody)
     {
-        var token = _httpContextAccessor.HttpContext?.Request.Headers["Authorization"].FirstOrDefault()?["Bearer ".Length..];
+        string? token = _httpContextAccessor.HttpContext?.Request.Headers["Authorization"].FirstOrDefault()?["Bearer ".Length..];
         return await Post<T>(endpoint, requestBody, token);
     }
 
@@ -66,7 +66,7 @@ public class SupabaseService : ISupabaseService
     /// <exception cref="JsonException"></exception>
     public async Task<T> SendGetAsUser<T>(string endpoint)
     {
-        var token = _httpContextAccessor.HttpContext?.Request.Headers["Authorization"].FirstOrDefault()?["Bearer ".Length..];
+        string? token = _httpContextAccessor.HttpContext?.Request.Headers["Authorization"].FirstOrDefault()?["Bearer ".Length..];
         return await Get<T>(endpoint, token);
     }
 

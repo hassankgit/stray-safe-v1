@@ -16,7 +16,7 @@ public class ImageMetadataTest
         _imageMetadataClient = new ImageMetadataClient();
         string imagePath = Path.Combine("Resources", "exifTest3.jpg");
         byte[] fileBytes = await File.ReadAllBytesAsync(imagePath);
-        var memoryStream = new MemoryStream(fileBytes);
+        MemoryStream memoryStream = new(fileBytes);
         _fileWithExifData = new FormFile(memoryStream, 0, memoryStream.Length, "Image", "exifTest3.jpg");
     }
 

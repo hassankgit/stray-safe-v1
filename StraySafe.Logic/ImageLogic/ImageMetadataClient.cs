@@ -23,7 +23,7 @@ namespace StraySafe.Logic.ImageLogic
                 return null;
             }
             
-            if (DateTime.TryParseExact(dateTimeString,"yyyy:MM:dd HH:mm:ss", null, System.Globalization.DateTimeStyles.None, out var dateTaken))
+            if (DateTime.TryParseExact(dateTimeString,"yyyy:MM:dd HH:mm:ss", null, System.Globalization.DateTimeStyles.None, out DateTime dateTaken))
             {
                 return dateTaken;
             }

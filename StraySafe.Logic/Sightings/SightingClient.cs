@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Integration.Supabase.Interfaces;
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore.Storage;
 using StraySafe.Data.Database;
 using StraySafe.Data.Database.Models.Sightings;
 using StraySafe.Logic.ImageLogic;
@@ -85,7 +86,7 @@ public class SightingClient
     {
         User user = await _supabaseService.User.GetCurrentUserAsync();
 
-        using var transaction = await _context.Database.BeginTransactionAsync();
+        using IDbContextTransaction? transaction = await _context.Database.BeginTransactionAsync();
         try
         {
             SightingDetail detail = new()
