@@ -7,7 +7,6 @@ namespace StraySafe.Logic.ImageLogic
 {
     public class ImageMetadataClient
     {
-
         public DateTime? GetDateTime(IFormFile file)
         {
             Stream stream = file.OpenReadStream();
