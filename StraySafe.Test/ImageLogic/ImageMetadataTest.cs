@@ -9,6 +9,7 @@ public class ImageMetadataTest
 {
     private ImageMetadataClient? _imageMetadataClient;
     private FormFile? _fileWithExifData;
+    private FormFile? _emptyFile;
 
     [TestInitialize]
     public async Task SetUpAsync()
@@ -18,6 +19,7 @@ public class ImageMetadataTest
         byte[] fileBytes = await File.ReadAllBytesAsync(imagePath);
         MemoryStream memoryStream = new(fileBytes);
         _fileWithExifData = new FormFile(memoryStream, 0, memoryStream.Length, "Image", "exifTest3.jpg");
+        _emptyFile = new FormFile(null, 0, memoryStream.Length, string.Empty, string.Empty);
     }
 
     [TestMethod]
@@ -29,11 +31,25 @@ public class ImageMetadataTest
     }
 
     [TestMethod]
+    public void GetDateTime_FromEmptyFile_ReturnsNull()
+    {
+        DateTime? result = _imageMetadataClient!.GetDateTime(_emptyFile!);
+        Assert.IsNull(result);
+    }
+
+    [TestMethod]
     public void GetCoordinates_FromFile_GetsCoordinatesFromExifProfile()
     {
         Coordinates? result = _imageMetadataClient!.GetCoordinates(_fileWithExifData!);
         Assert.IsNotNull(result);
         Assert.AreEqual(45, result.Latitude);
         Assert.AreEqual(-100, result.Longitude);
+    }
+
+    [TestMethod]
+    public void GetCoordinates_FromEmptyFile_ReturnsNull()
+    {
+        Coordinates? result = _imageMetadataClient!.GetCoordinates(_emptyFile!);
+        Assert.IsNull(result);
     }
 }
