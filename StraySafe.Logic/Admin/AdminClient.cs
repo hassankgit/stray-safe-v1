@@ -1,4 +1,5 @@
 ﻿using Integration.Supabase.Interfaces;
+using Integration.Supabase.Models.Auth.Users;
 
 namespace StraySafe.Logic.Admin;
 public class AdminClient

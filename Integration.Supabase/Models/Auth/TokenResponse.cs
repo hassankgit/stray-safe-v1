@@ -1,4 +1,5 @@
 ﻿using System.Text.Json.Serialization;
+using Integration.Supabase.Models.Auth.Users;
 
 namespace Integration.Supabase.Models.Auth;
 

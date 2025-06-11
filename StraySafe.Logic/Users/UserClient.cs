@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Integration.Supabase.Interfaces;
 using Integration.Supabase.Models.Auth;
+using Integration.Supabase.Models.Auth.Users;
 using StraySafe.Logic.Users.Models;
 
 namespace StraySafe.Logic.Users;

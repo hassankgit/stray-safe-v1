@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Integration.Supabase.Interfaces;
+using Integration.Supabase.Models.Auth.Users;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore.Storage;
 using StraySafe.Data.Database;

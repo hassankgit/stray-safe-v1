@@ -1,11 +1,14 @@
-﻿public enum EAnimalAge
+﻿namespace StraySafe.Data.Database.Enums
 {
-    ONE_TO_THREE_MONTHS,
-    THREE_TO_SIX_MONTHS,
-    SIX_TO_TWELVE_MONTHS,
-    ONE_TO_TWO_YEARS,
-    TWO_TO_FIVE_YEARS,
-    FIVE_TO_TEN_YEARS,
-    TEN_PLUS_YEARS,
-    UNKNOWN
+    public enum EAnimalAge
+    {
+        ONE_TO_THREE_MONTHS,
+        THREE_TO_SIX_MONTHS,
+        SIX_TO_TWELVE_MONTHS,
+        ONE_TO_TWO_YEARS,
+        TWO_TO_FIVE_YEARS,
+        FIVE_TO_TEN_YEARS,
+        TEN_PLUS_YEARS,
+        UNKNOWN
+    }
 }
