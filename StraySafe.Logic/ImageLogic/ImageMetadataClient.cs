@@ -40,7 +40,7 @@ namespace StraySafe.Logic.ImageLogic
         }
         public Coordinates? GetCoordinates(IFormFile file)
         {
-            Coordinates coordinates = new Coordinates();
+            Coordinates coordinates = new();
             try
             {
                 Stream stream = file.OpenReadStream();

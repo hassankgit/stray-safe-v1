@@ -1,6 +1,6 @@
 ﻿using StraySafe.Data.Database.Models.Sightings;
 
-namespace StraySafe.Logic.ImageLogic;
+namespace StraySafe.Logic.Sightings.Models;
 
 public class UploadResponseDto
 {

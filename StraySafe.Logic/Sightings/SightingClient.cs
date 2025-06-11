@@ -6,6 +6,7 @@ using StraySafe.Data.Database;
 using StraySafe.Data.Database.Models.Sightings;
 using StraySafe.Logic.ImageLogic;
 using StraySafe.Logic.Sightings.Models;
+using StraySafe.Logic.Utilities;
 
 namespace StraySafe.Logic.Sightings;
 
@@ -36,7 +37,7 @@ public class SightingClient
 
     public async Task<UploadResponseDto> UploadImage(IFormFile image)
     {
-        UploadResponseDto dto = new UploadResponseDto()
+        UploadResponseDto dto = new()
         {
             Url = await _supabaseService.User.UploadImage(image),
             Coordinates = _imageMetadataClient.GetCoordinates(image),
@@ -49,7 +50,7 @@ public class SightingClient
     {
         if (coordinates.Latitude == null || coordinates.Longitude == null)
         {
-            return new List<SightingPreview>();
+            return [];
         }
 
         // Radius currently sent to 3000 miles TODO: user defined radius?
@@ -63,7 +64,7 @@ public class SightingClient
         return sightingPreviewsInRange;
     }
 
-    private MapBoundingBox GetBoundingBox(double lat, double lng, double radiusInMiles)
+    private static MapBoundingBox GetBoundingBox(double lat, double lng, double radiusInMiles)
     {
         double latOffset = radiusInMiles / 69.0;
         double lngOffset = radiusInMiles / (69.0 * Math.Cos(lat * Math.PI / 180.0));
@@ -138,7 +139,7 @@ public class SightingClient
         catch (Exception ex)
         {
             await transaction.RollbackAsync();
-            throw new Exception("Failed to create sighting");
+            throw new Exception($"Failed to create sighting: {ex.Message}");
         }
     }
 }

@@ -6,7 +6,7 @@ public class MappingProfile
 {
     public static MapperConfiguration InitializeAutoMapper()
     {
-        MapperConfiguration config = new MapperConfiguration(c =>
+        MapperConfiguration config = new(c =>
         {
             c.AddProfile(new AuthMapper());
             c.AddProfile(new SightingDetailMapper());
