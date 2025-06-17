@@ -1,5 +1,4 @@
 using StraySafe.Data.Database;
-using StraySafe.Logic.ImageLogic;
 using StraySafe.Logic.Users;
 using StraySafe.Logic.Admin;
 using StraySafe.Logic.Middleware;
@@ -92,7 +91,6 @@ public class Program
 
     private static void ConfigureClientsAndServices(WebApplicationBuilder builder)
     {
-        builder.Services.AddScoped<ImageMetadataClient>();
         builder.Services.AddScoped<AdminClient>();
         builder.Services.AddScoped<UserClient>();
         builder.Services.AddScoped<SightingClient>();

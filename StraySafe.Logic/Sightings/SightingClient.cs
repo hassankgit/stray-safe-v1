@@ -15,15 +15,11 @@ public class SightingClient
 {
     private readonly DataContext _context;
     private readonly ISupabaseService _supabaseService;
-    private readonly ImageMetadataClient _imageMetadataClient;
 
-    public SightingClient(DataContext context,
-                          ISupabaseService supabaseService,
-                          ImageMetadataClient imageMetadataClient)
+    public SightingClient(DataContext context, ISupabaseService supabaseService)
     {
         _context = context;
         _supabaseService = supabaseService;
-        _imageMetadataClient = imageMetadataClient;
     }
 
     public SightingDetailDto? GetSightingDetailById(int id)
@@ -59,8 +55,8 @@ public class SightingClient
         UploadResponseDto dto = new()
         {
             Url = await _supabaseService.User.UploadImage(image),
-            Coordinates = _imageMetadataClient.GetCoordinates(image),
-            DateTime = _imageMetadataClient.GetDateTime(image) ?? DateTime.Now,
+            Coordinates = ImageMetadataClient.GetCoordinates(image),
+            DateTime = ImageMetadataClient.GetDateTime(image) ?? DateTime.Now,
         };
         return dto;
     }

@@ -7,7 +7,7 @@ namespace StraySafe.Logic.ImageLogic
 {
     public class ImageMetadataClient
     {
-        public DateTime? GetDateTime(IFormFile file)
+        public static DateTime? GetDateTime(IFormFile file)
         {
             try
             {
@@ -38,7 +38,7 @@ namespace StraySafe.Logic.ImageLogic
             }
             
         }
-        public Coordinates? GetCoordinates(IFormFile file)
+        public static Coordinates? GetCoordinates(IFormFile file)
         {
             Coordinates coordinates = new();
             try

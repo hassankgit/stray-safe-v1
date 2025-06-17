@@ -5,7 +5,6 @@ using Moq;
 using StraySafe.Data.Database;
 using StraySafe.Data.Database.Enums;
 using StraySafe.Data.Database.Models.Sightings;
-using StraySafe.Logic.ImageLogic;
 using StraySafe.Logic.Sightings;
 using StraySafe.Logic.Sightings.Models;
 using StraySafe.Test.MockedServices;
@@ -18,8 +17,6 @@ public class SightingClientTest
     private DataContext? _context;
     private SqliteConnection? _connection;
     private Mock<ISupabaseService>? _supabaseServiceMock;
-    private Mock<ImageMetadataClient>? _imageMetadataClientMock;
-    private FileMockFactory? _fileMockFactory;
     private FormFile? _fileWithExifData;
     private SightingClient? _sightingClient;
 
@@ -28,16 +25,8 @@ public class SightingClientTest
     {
         _context = DataContextMockFactory.Mock(out _connection);
         _supabaseServiceMock = SupabaseServiceMockFactory.Mock();
-        _imageMetadataClientMock = new Mock<ImageMetadataClient>();
-
-        _fileMockFactory = new FileMockFactory();
-        _fileWithExifData = await _fileMockFactory.GetFileWithExifData();
-
-        _sightingClient = new SightingClient(
-            _context,
-            _supabaseServiceMock.Object,
-            _imageMetadataClientMock.Object
-        );
+        _fileWithExifData = await FileMockFactory.GetFileWithExifData();
+        _sightingClient = new SightingClient(_context, _supabaseServiceMock.Object);
     }
 
     [TestCleanup]

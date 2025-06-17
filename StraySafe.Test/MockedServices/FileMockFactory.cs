@@ -4,7 +4,7 @@ namespace StraySafe.Test.MockedServices;
 
 public class FileMockFactory
 {
-    public async Task<FormFile> GetFileWithExifData()
+    public static async Task<FormFile> GetFileWithExifData()
     {
         string imagePath = Path.Combine("Resources", "exifTest3.jpg");
         byte[] fileBytes = await File.ReadAllBytesAsync(imagePath);
@@ -13,7 +13,7 @@ public class FileMockFactory
         return fileWithExifData;
     }
 
-    public FormFile GetEmptyFile()
+    public static FormFile GetEmptyFile()
     {
         return new FormFile(null, 0, 0, string.Empty, string.Empty);
     }
