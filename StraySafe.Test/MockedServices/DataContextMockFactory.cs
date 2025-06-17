@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.Data.Sqlite;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using StraySafe.Data.Database;
 using StraySafe.Data.Database.Enums;
@@ -8,15 +9,17 @@ namespace StraySafe.Test.MockedServices;
 
 public static class DataContextMockFactory
 {
-    public static DataContext Mock(string dbName)
+    public static DataContext Mock(out SqliteConnection connection)
     {
-        DbContextOptions<DataContext>? options = new DbContextOptionsBuilder<DataContext>()
-            .UseInMemoryDatabase(dbName)
+        connection = new SqliteConnection("DataSource=:memory:");
+        connection.Open();
+
+        DbContextOptions<DataContext> options = new DbContextOptionsBuilder<DataContext>()
+            .UseSqlite(connection)
             .Options;
 
         IConfigurationRoot config = new ConfigurationBuilder().Build();
         DataContext context = new(options, config);
-        context.Database.EnsureDeleted();
         context.Database.EnsureCreated();
 
         context.SightingDetails.AddRange(

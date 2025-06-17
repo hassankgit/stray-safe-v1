@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http.Internal;
 using StraySafe.Data.Database.Models.Sightings;
 using StraySafe.Logic.ImageLogic;
+using StraySafe.Test.MockedServices;
 
 namespace StraySafe.Test.ImageLogic;
 
@@ -8,19 +9,17 @@ namespace StraySafe.Test.ImageLogic;
 public class ImageMetadataTest
 {
     private ImageMetadataClient? _imageMetadataClient;
+    private FileMockFactory? _fileMockFactory;
     private FormFile? _fileWithExifData;
     private FormFile? _emptyFile;
 
     [TestInitialize]
     public async Task SetUpAsync()
     {
-        string imagePath = Path.Combine("Resources", "exifTest3.jpg");
-        byte[] fileBytes = await File.ReadAllBytesAsync(imagePath);
-        MemoryStream memoryStream = new(fileBytes);
-        _fileWithExifData = new FormFile(memoryStream, 0, memoryStream.Length, "Image", "exifTest3.jpg");
-
-        _emptyFile = new FormFile(null, 0, memoryStream.Length, string.Empty, string.Empty);
         _imageMetadataClient = new ImageMetadataClient();
+        _fileMockFactory = new FileMockFactory();
+        _fileWithExifData = await _fileMockFactory!.GetFileWithExifData();
+        _emptyFile = _fileMockFactory.GetEmptyFile();
     }
 
     [TestMethod]

@@ -1,10 +1,10 @@
-﻿using AutoMapper;
-using Integration.Supabase.Interfaces;
+﻿using Integration.Supabase.Interfaces;
 using Integration.Supabase.Models.Auth.Users;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore.Storage;
 using StraySafe.Data.Database;
 using StraySafe.Data.Database.Models.Sightings;
+using StraySafe.Data.Utilities;
 using StraySafe.Logic.ImageLogic;
 using StraySafe.Logic.Sightings.Models;
 using StraySafe.Logic.Utilities;
@@ -14,25 +14,43 @@ namespace StraySafe.Logic.Sightings;
 public class SightingClient
 {
     private readonly DataContext _context;
-    private readonly IMapper _mapper;
     private readonly ISupabaseService _supabaseService;
     private readonly ImageMetadataClient _imageMetadataClient;
 
     public SightingClient(DataContext context,
-                          IMapper mapper,
                           ISupabaseService supabaseService,
                           ImageMetadataClient imageMetadataClient)
     {
         _context = context;
-        _mapper = mapper;
         _supabaseService = supabaseService;
         _imageMetadataClient = imageMetadataClient;
     }
 
     public SightingDetailDto? GetSightingDetailById(int id)
     {
-        SightingDetail? detail = _context.SightingDetails.Where(x => x.Id == id).FirstOrDefault();
-        SightingDetailDto dto = _mapper.Map<SightingDetailDto>(detail);
+        SightingDetail? detail = _context.SightingDetails.Where(x => x.Id == id).FirstOrDefault() ?? 
+            throw new InvalidOperationException($"Sighting detail of ID '{id}' was not found.");
+        SightingDetailDto dto = new()
+        {
+            Id = detail.Id,
+            Name = detail.Name,
+            Species = detail.Species,
+            Breed = detail.Breed,
+            Age = detail.Age.ToLabel(),
+            Sex = detail.Sex.ToLabel(),
+            Tags = 
+            [
+                detail.Tags?.Status.ToLabel() ?? "unknown",
+                detail.Tags?.Behavior.ToLabel() ?? "unknown",
+                detail.Tags?.Health.ToLabel() ?? "unknown"
+            ],
+            ImageUrl = detail.ImageUrl,
+            LastSpotted = detail.LastSpotted,
+            Location = detail.Location,
+            Notes = detail.Notes,
+            SubmittedById = detail.SubmittedById,
+            SubmittedByName = detail.SubmittedByName,
+        };
         return dto;
     }
 
@@ -140,7 +158,7 @@ public class SightingClient
         catch (Exception ex)
         {
             await transaction.RollbackAsync();
-            throw new Exception($"Failed to create sighting: {ex.Message}");
+            throw new InvalidOperationException($"Failed to create sighting: {ex}");
         }
     }
 }
