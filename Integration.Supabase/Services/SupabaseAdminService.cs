@@ -13,7 +13,7 @@ internal class SupabaseAdminService : ISupabaseAdminService
 
     public async Task<List<User>> GetAllUsersAsync()
     {
-        var response = await _supabaseService.SendGetAsAdmin<SupabaseUserResponse>("auth/v1/admin/users");
+        SupabaseUserResponse? response = await _supabaseService.SendGetAsAdmin<SupabaseUserResponse>("auth/v1/admin/users");
         return response?.Users ?? [];
     }
 }

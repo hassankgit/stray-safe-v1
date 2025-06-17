@@ -1,6 +1,7 @@
 ﻿using Integration.Supabase;
 using Integration.Supabase.Interfaces;
 using Integration.Supabase.Models.Auth;
+using Integration.Supabase.Models.Auth.Users;
 using Microsoft.AspNetCore.Http;
 
 internal class SupabaseUserService : ISupabaseUserService

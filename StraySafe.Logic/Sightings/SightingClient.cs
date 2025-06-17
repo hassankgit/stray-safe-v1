@@ -1,45 +1,62 @@
-﻿using AutoMapper;
-using Integration.Supabase.Interfaces;
+﻿using Integration.Supabase.Interfaces;
+using Integration.Supabase.Models.Auth.Users;
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore.Storage;
 using StraySafe.Data.Database;
 using StraySafe.Data.Database.Models.Sightings;
+using StraySafe.Data.Utilities;
 using StraySafe.Logic.ImageLogic;
 using StraySafe.Logic.Sightings.Models;
+using StraySafe.Logic.Utilities;
 
 namespace StraySafe.Logic.Sightings;
 
 public class SightingClient
 {
     private readonly DataContext _context;
-    private readonly IMapper _mapper;
     private readonly ISupabaseService _supabaseService;
-    private readonly ImageMetadataClient _imageMetadataClient;
 
-    public SightingClient(DataContext context,
-                          IMapper mapper,
-                          ISupabaseService supabaseService,
-                          ImageMetadataClient imageMetadataClient)
+    public SightingClient(DataContext context, ISupabaseService supabaseService)
     {
         _context = context;
-        _mapper = mapper;
         _supabaseService = supabaseService;
-        _imageMetadataClient = imageMetadataClient;
     }
 
     public SightingDetailDto? GetSightingDetailById(int id)
     {
-        SightingDetail? detail = _context.SightingDetails.Where(x => x.Id == id).FirstOrDefault();
-        SightingDetailDto dto = _mapper.Map<SightingDetailDto>(detail);
+        SightingDetail? detail = _context.SightingDetails.Where(x => x.Id == id).FirstOrDefault() ?? 
+            throw new InvalidOperationException($"Sighting detail of ID '{id}' was not found.");
+        SightingDetailDto dto = new()
+        {
+            Id = detail.Id,
+            Name = detail.Name,
+            Species = detail.Species,
+            Breed = detail.Breed,
+            Age = detail.Age.ToLabel(),
+            Sex = detail.Sex.ToLabel(),
+            Tags = 
+            [
+                detail.Tags?.Status.ToLabel() ?? "unknown",
+                detail.Tags?.Behavior.ToLabel() ?? "unknown",
+                detail.Tags?.Health.ToLabel() ?? "unknown"
+            ],
+            ImageUrl = detail.ImageUrl,
+            LastSpotted = detail.LastSpotted,
+            Location = detail.Location,
+            Notes = detail.Notes,
+            SubmittedById = detail.SubmittedById,
+            SubmittedByName = detail.SubmittedByName,
+        };
         return dto;
     }
 
     public async Task<UploadResponseDto> UploadImage(IFormFile image)
     {
-        UploadResponseDto dto = new UploadResponseDto()
+        UploadResponseDto dto = new()
         {
             Url = await _supabaseService.User.UploadImage(image),
-            Coordinates = _imageMetadataClient.GetCoordinates(image),
-            DateTime = _imageMetadataClient.GetDateTime(image) ?? DateTime.Now,
+            Coordinates = ImageMetadataClient.GetCoordinates(image),
+            DateTime = ImageMetadataClient.GetDateTime(image) ?? DateTime.Now,
         };
         return dto;
     }
@@ -48,11 +65,11 @@ public class SightingClient
     {
         if (coordinates.Latitude == null || coordinates.Longitude == null)
         {
-            return new List<SightingPreview>();
+            return [];
         }
 
-        // Radius currently sent to 100 miles TODO: user defined radius?
-        MapBoundingBox boundingBox = GetBoundingBox((double)coordinates.Latitude, (double)coordinates.Longitude, 100);
+        // Radius currently sent to 3000 miles TODO: user defined radius?
+        MapBoundingBox boundingBox = GetBoundingBox((double)coordinates.Latitude, (double)coordinates.Longitude, 3000);
         List<SightingPreview> sightingPreviewsInRange = _context.SightingPreviews.Where(
                 x => x.Coordinates.Latitude <= boundingBox.MaxLat &&
                 x.Coordinates.Latitude >= boundingBox.MinLat &&
@@ -62,7 +79,7 @@ public class SightingClient
         return sightingPreviewsInRange;
     }
 
-    private MapBoundingBox GetBoundingBox(double lat, double lng, double radiusInMiles)
+    private static MapBoundingBox GetBoundingBox(double lat, double lng, double radiusInMiles)
     {
         double latOffset = radiusInMiles / 69.0;
         double lngOffset = radiusInMiles / (69.0 * Math.Cos(lat * Math.PI / 180.0));
@@ -85,7 +102,7 @@ public class SightingClient
     {
         User user = await _supabaseService.User.GetCurrentUserAsync();
 
-        using var transaction = await _context.Database.BeginTransactionAsync();
+        using IDbContextTransaction? transaction = await _context.Database.BeginTransactionAsync();
         try
         {
             SightingDetail detail = new()
@@ -137,7 +154,7 @@ public class SightingClient
         catch (Exception ex)
         {
             await transaction.RollbackAsync();
-            throw new Exception("Failed to create sighting");
+            throw new InvalidOperationException($"Failed to create sighting: {ex}");
         }
     }
 }

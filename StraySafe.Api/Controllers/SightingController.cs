@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using StraySafe.Data.Database.Models.Sightings;
-using StraySafe.Logic.ImageLogic;
 using StraySafe.Logic.Sightings;
 using StraySafe.Logic.Sightings.Models;
 

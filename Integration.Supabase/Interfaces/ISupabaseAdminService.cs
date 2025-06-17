@@ -1,4 +1,6 @@
-﻿namespace Integration.Supabase.Interfaces;
+﻿using Integration.Supabase.Models.Auth.Users;
+
+namespace Integration.Supabase.Interfaces;
 
 public interface ISupabaseAdminService
 {

@@ -42,7 +42,7 @@ public class ExceptionHandlingMiddleware
         context.Response.StatusCode = statusCode;
         context.Response.ContentType = "application/json";
 
-        ErrorResponse errorResponse = new ErrorResponse
+        ErrorResponse errorResponse = new()
         {
             StatusCode = statusCode,
             Message = ex.Message

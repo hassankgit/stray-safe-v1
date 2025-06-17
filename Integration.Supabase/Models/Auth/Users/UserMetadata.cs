@@ -1,9 +1,9 @@
-﻿using Newtonsoft.Json;
+﻿using System.Text.Json.Serialization;
 
 namespace Integration.Supabase.Models.Auth.Users;
 
 public class UserMetadata
 {
-    [JsonProperty("email_verified")]
+    [JsonPropertyName("email_verified")]
     public bool EmailVerified { get; set; }
 }
