@@ -1,8 +1,10 @@
-﻿using System.Text.Json.Serialization;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Text.Json.Serialization;
 using Integration.Supabase.Models.Auth.Users;
 
 namespace Integration.Supabase.Models.Auth;
 
+[ExcludeFromCodeCoverage]
 public class TokenResponse
 {
     // TODO: add refresh token param after configuring refresh tokens

@@ -1,7 +1,9 @@
-﻿using System.Text.Json.Serialization;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Text.Json.Serialization;
 
 namespace Integration.Supabase.Models.Auth.Users;
 
+[ExcludeFromCodeCoverage]
 public class User
 {
     public required string Id { get; set; }

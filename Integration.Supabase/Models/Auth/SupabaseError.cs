@@ -3,6 +3,7 @@ using System.Text.Json.Serialization;
 
 namespace Integration.Supabase.Models.Auth;
 
+[ExcludeFromCodeCoverage]
 public class SupabaseError
 {
     [JsonPropertyName("code")]
@@ -20,6 +21,7 @@ public class SupabaseError
         this.Message = FirstLetterToUppercase(message);
     }
 
+    // TODO : Determine if this is going to stay excluded from code coverage or if this method is necessary
     public static string FirstLetterToUppercase(string? s)
     {
         if (string.IsNullOrEmpty(s))
