@@ -1,5 +1,8 @@
-﻿namespace Integration.Supabase.Models.Auth;
+﻿using System.Diagnostics.CodeAnalysis;
 
+namespace Integration.Supabase.Models.Auth;
+
+[ExcludeFromCodeCoverage]
 public class LoginRequest
 {
     public string? Username { get; set; }

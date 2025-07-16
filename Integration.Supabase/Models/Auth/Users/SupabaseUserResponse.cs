@@ -1,5 +1,8 @@
-﻿namespace Integration.Supabase.Models.Auth.Users;
+﻿using System.Diagnostics.CodeAnalysis;
 
+namespace Integration.Supabase.Models.Auth.Users;
+
+[ExcludeFromCodeCoverage]
 public class SupabaseUserResponse
 {
     public List<User>? Users { get; set; }

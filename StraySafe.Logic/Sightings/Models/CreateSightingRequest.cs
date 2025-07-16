@@ -1,8 +1,10 @@
-﻿using StraySafe.Data.Database.Enums;
+﻿using System.Diagnostics.CodeAnalysis;
+using StraySafe.Data.Database.Enums;
 using StraySafe.Data.Database.Models.Sightings;
 
 namespace StraySafe.Logic.Sightings.Models;
 
+[ExcludeFromCodeCoverage]
 public class CreateSightingRequest
 {
     public string? Name { get; set; }

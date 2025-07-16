@@ -1,5 +1,8 @@
-﻿namespace StraySafe.Data.Database.Models.Sightings;
+﻿using System.Diagnostics.CodeAnalysis;
 
+namespace StraySafe.Data.Database.Models.Sightings;
+
+[ExcludeFromCodeCoverage]
 public class SightingPreview
 {
     public int Id { get; set; }

@@ -1,7 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Integration.Supabase.Models.Auth;
 
+[ExcludeFromCodeCoverage]
 public class RegisterRequest
 {
     [Required]
