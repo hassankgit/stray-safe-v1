@@ -1,5 +1,8 @@
-﻿namespace StraySafe.Logic.Users.Models;
+﻿using System.Diagnostics.CodeAnalysis;
 
+namespace StraySafe.Logic.Users.Models;
+
+[ExcludeFromCodeCoverage]
 public class UserDto
 {
     public required string Id { get; set; }

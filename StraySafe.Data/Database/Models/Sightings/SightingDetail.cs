@@ -1,8 +1,10 @@
-﻿using System.Text.Json.Serialization;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Text.Json.Serialization;
 using StraySafe.Data.Database.Enums;
 
 namespace StraySafe.Data.Database.Models.Sightings;
 
+[ExcludeFromCodeCoverage]
 public class SightingDetail
 {
     public int Id { get; set; }
