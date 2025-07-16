@@ -1,12 +1,8 @@
 name: Feature to Development Pipeline
 
-# on:
-#   pull_request:
-#     branches: [development]
-
 on:
-  push:
-    branches: [feature-hk-0014]
+  pull_request:
+    branches: [development]
 
 jobs:
   build-and-test:
